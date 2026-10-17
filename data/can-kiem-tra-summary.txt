@@ -1,0 +1,6 @@
+Database: D:\app\hcmus-hub\v0.8\data\hcmus_hub.sqlite3
+Tổng bài được đánh dấu Cần kiểm tra: 52
+
+Theo lý do (một bài có thể thuộc nhiều nhóm):
+- Ngày đăng chưa xác minh: 30
+- Thiếu ngày đăng: 22

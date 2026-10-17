@@ -1,0 +1,1196 @@
+{
+  "generated_at": "2026-10-17T15:27:24+07:00",
+  "config": "D:\\app\\hcmus-hub\\v0.8.1\\config\\sources.json",
+  "sources": [
+    {
+      "source_id": "fit",
+      "source_name": "Khoa Công nghệ Thông tin (FIT)",
+      "base_url": "https://www.fit.hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:25:10+07:00",
+      "recommendation": "html_parser",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://www.fit.hcmus.edu.vn/robots.txt",
+          "final_url": "https://www.fit.hcmus.edu.vn/robots.txt",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://www.fit.hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://www.fit.hcmus.edu.vn/sitemap.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://www.fit.hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://www.fit.hcmus.edu.vn/sitemap_index.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://www.fit.hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://www.fit.hcmus.edu.vn/wp-sitemap.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://www.fit.hcmus.edu.vn/feed/",
+          "final_url": "https://www.fit.hcmus.edu.vn/feed/",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://www.fit.hcmus.edu.vn/news/feed/",
+          "final_url": "https://www.fit.hcmus.edu.vn/news/feed/",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://www.fit.hcmus.edu.vn/feed",
+          "final_url": "https://www.fit.hcmus.edu.vn/feed",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://www.fit.hcmus.edu.vn/rss.xml",
+          "final_url": "https://www.fit.hcmus.edu.vn/rss.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://www.fit.hcmus.edu.vn/atom.xml",
+          "final_url": "https://www.fit.hcmus.edu.vn/atom.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://www.fit.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://www.fit.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 9172,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "listing",
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-chung",
+          "final_url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-chung",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 56826,
+          "classification": "html",
+          "note": "HTML; title='Danh sách thông báo - Khoa Công Nghệ Thông Tin - Trường ĐH KHTN, ĐHQG-HCM'; 168 liên kết."
+        },
+        {
+          "label": "listing",
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-tin-hoc-bong",
+          "final_url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-tin-hoc-bong",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 42290,
+          "classification": "html",
+          "note": "HTML; title='Danh sách thông báo - Khoa Công Nghệ Thông Tin - Trường ĐH KHTN, ĐHQG-HCM'; 139 liên kết."
+        },
+        {
+          "label": "listing",
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-he-chinh-quy",
+          "final_url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-he-chinh-quy",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 50642,
+          "classification": "html",
+          "note": "HTML; title='Danh sách thông báo - Khoa Công Nghệ Thông Tin - Trường ĐH KHTN, ĐHQG-HCM'; 149 liên kết."
+        },
+        {
+          "label": "listing",
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/hoat-dong-sinh-vien",
+          "final_url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/hoat-dong-sinh-vien",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 46206,
+          "classification": "html",
+          "note": "HTML; title='Danh sách thông báo - Khoa Công Nghệ Thông Tin - Trường ĐH KHTN, ĐHQG-HCM'; 143 liên kết."
+        },
+        {
+          "label": "listing",
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-he-hoan-chinh",
+          "final_url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-he-hoan-chinh",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 40666,
+          "classification": "html",
+          "note": "HTML; title='Danh sách thông báo - Khoa Công Nghệ Thông Tin - Trường ĐH KHTN, ĐHQG-HCM'; 137 liên kết."
+        },
+        {
+          "label": "listing",
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/hoi-thao-hoi-nghi",
+          "final_url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/hoi-thao-hoi-nghi",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 56932,
+          "classification": "html",
+          "note": "HTML; title='Danh sách thông báo - Khoa Công Nghệ Thông Tin - Trường ĐH KHTN, ĐHQG-HCM'; 166 liên kết."
+        },
+        {
+          "label": "listing",
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-tin-tuyen-dung",
+          "final_url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-tin-tuyen-dung",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 44188,
+          "classification": "html",
+          "note": "HTML; title='Danh sách thông báo - Khoa Công Nghệ Thông Tin - Trường ĐH KHTN, ĐHQG-HCM'; 140 liên kết."
+        },
+        {
+          "label": "listing",
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/tot-nghiep-qui-trinh-thuc-hien",
+          "final_url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/tot-nghiep-qui-trinh-thuc-hien",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 51947,
+          "classification": "html",
+          "note": "HTML; title='Danh sách thông báo - Khoa Công Nghệ Thông Tin - Trường ĐH KHTN, ĐHQG-HCM'; 149 liên kết."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    },
+    {
+      "source_id": "ctsv",
+      "source_name": "Phòng Công tác Sinh viên",
+      "base_url": "https://ctsv.hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:25:20+07:00",
+      "recommendation": "manual_review_or_browser",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://ctsv.hcmus.edu.vn/robots.txt",
+          "final_url": "https://ctsv.hcmus.edu.vn/robots.txt",
+          "status": 200,
+          "content_type": "text/plain",
+          "bytes": 145,
+          "classification": "robots_txt",
+          "note": "robots.txt đọc được; 4 dòng Disallow; 1 Sitemap được khai báo."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://ctsv.hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://ctsv.hcmus.edu.vn/sitemap.xml",
+          "status": 200,
+          "content_type": "application/xml; charset=utf-8",
+          "bytes": 101355,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=urlset; 463 URL. Ví dụ: https://ctsv.hcmus.edu.vn/; https://ctsv.hcmus.edu.vn/about; https://ctsv.hcmus.edu.vn/info"
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://ctsv.hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://ctsv.hcmus.edu.vn/sitemap_index.xml",
+          "status": 404,
+          "content_type": "text/html",
+          "bytes": 146,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://ctsv.hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://ctsv.hcmus.edu.vn/wp-sitemap.xml",
+          "status": 404,
+          "content_type": "text/html",
+          "bytes": 146,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://ctsv.hcmus.edu.vn/feed/",
+          "final_url": "https://ctsv.hcmus.edu.vn/feed/",
+          "status": 404,
+          "content_type": "text/html",
+          "bytes": 146,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://ctsv.hcmus.edu.vn/news/feed/",
+          "final_url": "https://ctsv.hcmus.edu.vn/news/feed/",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 100,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://ctsv.hcmus.edu.vn/feed",
+          "final_url": "https://ctsv.hcmus.edu.vn/feed",
+          "status": 404,
+          "content_type": "text/html",
+          "bytes": 146,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://ctsv.hcmus.edu.vn/rss.xml",
+          "final_url": "https://ctsv.hcmus.edu.vn/rss.xml",
+          "status": 404,
+          "content_type": "text/html",
+          "bytes": 146,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://ctsv.hcmus.edu.vn/atom.xml",
+          "final_url": "https://ctsv.hcmus.edu.vn/atom.xml",
+          "status": 404,
+          "content_type": "text/html",
+          "bytes": 146,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://ctsv.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://ctsv.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 404,
+          "content_type": "text/html",
+          "bytes": 146,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    },
+    {
+      "source_id": "hcmus",
+      "source_name": "Website chính HCMUS",
+      "base_url": "https://hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:25:48+07:00",
+      "recommendation": "rss_atom",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://hcmus.edu.vn/robots.txt",
+          "final_url": "https://hcmus.edu.vn/robots.txt",
+          "status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "bytes": 261,
+          "classification": "robots_txt",
+          "note": "robots.txt đọc được; 4 dòng Disallow; 2 Sitemap được khai báo."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://hcmus.edu.vn/sitemap.xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 2419,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 14 sitemap con. Ví dụ: https://hcmus.edu.vn/post-sitemap.xml; https://hcmus.edu.vn/post-sitemap2.xml; https://hcmus.edu.vn/post-sitemap3.xml"
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://hcmus.edu.vn/sitemap.xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 2419,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 14 sitemap con. Ví dụ: https://hcmus.edu.vn/post-sitemap.xml; https://hcmus.edu.vn/post-sitemap2.xml; https://hcmus.edu.vn/post-sitemap3.xml"
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://hcmus.edu.vn/sitemap.xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 2419,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 14 sitemap con. Ví dụ: https://hcmus.edu.vn/post-sitemap.xml; https://hcmus.edu.vn/post-sitemap2.xml; https://hcmus.edu.vn/post-sitemap3.xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://hcmus.edu.vn/feed/",
+          "final_url": "https://hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 155638,
+          "classification": "html",
+          "note": "HTML; title='University of Science - VNUHCM'; 110 liên kết. Feed khai báo: https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://hcmus.edu.vn/news/feed/",
+          "final_url": "https://hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 155638,
+          "classification": "html",
+          "note": "HTML; title='University of Science - VNUHCM'; 110 liên kết. Feed khai báo: https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://hcmus.edu.vn/feed",
+          "final_url": "https://hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 155638,
+          "classification": "html",
+          "note": "HTML; title='University of Science - VNUHCM'; 110 liên kết. Feed khai báo: https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://hcmus.edu.vn/rss.xml",
+          "final_url": "https://hcmus.edu.vn/sitemap.rss",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 25158,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 50 mục feed."
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://hcmus.edu.vn/atom.xml",
+          "final_url": "https://hcmus.edu.vn/atom.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 82871,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 200,
+          "content_type": "application/json; charset=utf-8",
+          "bytes": 30233,
+          "classification": "json_api",
+          "note": "JSON có cấu trúc danh sách, 1 phần tử ở phản hồi thử nghiệm."
+        },
+        {
+          "label": "sitemap_from_robots",
+          "url": "https://hcmus.edu.vn/sitemap.rss",
+          "final_url": "https://hcmus.edu.vn/sitemap.rss",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 25158,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 50 mục feed."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    },
+    {
+      "source_id": "pdt",
+      "source_name": "Phòng Đào tạo HCMUS",
+      "base_url": "https://hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:26:22+07:00",
+      "recommendation": "rss_atom",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://hcmus.edu.vn/robots.txt",
+          "final_url": "https://hcmus.edu.vn/robots.txt",
+          "status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "bytes": 261,
+          "classification": "robots_txt",
+          "note": "robots.txt đọc được; 4 dòng Disallow; 2 Sitemap được khai báo."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://hcmus.edu.vn/sitemap.xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 2419,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 14 sitemap con. Ví dụ: https://hcmus.edu.vn/post-sitemap.xml; https://hcmus.edu.vn/post-sitemap2.xml; https://hcmus.edu.vn/post-sitemap3.xml"
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://hcmus.edu.vn/sitemap.xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 2419,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 14 sitemap con. Ví dụ: https://hcmus.edu.vn/post-sitemap.xml; https://hcmus.edu.vn/post-sitemap2.xml; https://hcmus.edu.vn/post-sitemap3.xml"
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://hcmus.edu.vn/sitemap.xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 2419,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 14 sitemap con. Ví dụ: https://hcmus.edu.vn/post-sitemap.xml; https://hcmus.edu.vn/post-sitemap2.xml; https://hcmus.edu.vn/post-sitemap3.xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://hcmus.edu.vn/feed/",
+          "final_url": "https://hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 155638,
+          "classification": "html",
+          "note": "HTML; title='University of Science - VNUHCM'; 110 liên kết. Feed khai báo: https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://hcmus.edu.vn/news/feed/",
+          "final_url": "https://hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 155638,
+          "classification": "html",
+          "note": "HTML; title='University of Science - VNUHCM'; 110 liên kết. Feed khai báo: https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://hcmus.edu.vn/feed",
+          "final_url": "https://hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 155638,
+          "classification": "html",
+          "note": "HTML; title='University of Science - VNUHCM'; 110 liên kết. Feed khai báo: https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://hcmus.edu.vn/rss.xml",
+          "final_url": "https://hcmus.edu.vn/sitemap.rss",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 25158,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 50 mục feed."
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://hcmus.edu.vn/atom.xml",
+          "final_url": "https://hcmus.edu.vn/atom.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 82871,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 200,
+          "content_type": "application/json; charset=utf-8",
+          "bytes": 30233,
+          "classification": "json_api",
+          "note": "JSON có cấu trúc danh sách, 1 phần tử ở phản hồi thử nghiệm."
+        },
+        {
+          "label": "listing",
+          "url": "https://hcmus.edu.vn/phong-dao-tao/",
+          "final_url": "https://hcmus.edu.vn/phong-dao-tao/",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 138339,
+          "classification": "html",
+          "note": "HTML; title='Phòng Đào tạo - Trường Đại học Khoa học tự nhiên, ĐHQG-HCM'; 141 liên kết. Feed khai báo: https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2Fphong-dao-tao%2F&format=xml"
+        },
+        {
+          "label": "sitemap_from_robots",
+          "url": "https://hcmus.edu.vn/sitemap.rss",
+          "final_url": "https://hcmus.edu.vn/sitemap.rss",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 25158,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 50 mục feed."
+        },
+        {
+          "label": "alternate_feed",
+          "url": "https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2Fphong-dao-tao%2F&format=xml",
+          "final_url": "https://hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhcmus.edu.vn%2Fphong-dao-tao%2F&format=xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 2768,
+          "classification": "xml",
+          "note": "XML hợp lệ, root=oembed."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_name": "Cổng thông tin Tuyển sinh HCMUS",
+      "base_url": "https://tuyensinh.hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:26:33+07:00",
+      "recommendation": "rss_atom",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://tuyensinh.hcmus.edu.vn/robots.txt",
+          "final_url": "https://tuyensinh.hcmus.edu.vn/robots.txt",
+          "status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "bytes": 126,
+          "classification": "robots_txt",
+          "note": "robots.txt đọc được; 1 dòng Disallow; 1 Sitemap được khai báo."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://tuyensinh.hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://tuyensinh.hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 157482,
+          "classification": "html",
+          "note": "HTML; title='Trang chủ - Cổng thông tin tuyển sinh Trường Đại học Khoa học tự nhiên - ĐHQG-HCM'; 151 liên kết. Feed khai báo: https://tuyensinh.hcmus.edu.vn/feed/, https://tuyensinh.hcmus.edu.vn/comments/feed/, https://tuyensinh.hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftuyensinh.hcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://tuyensinh.hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://tuyensinh.hcmus.edu.vn/sitemap_index.xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 818,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 4 sitemap con. Ví dụ: https://tuyensinh.hcmus.edu.vn/post-sitemap.xml; https://tuyensinh.hcmus.edu.vn/page-sitemap.xml; https://tuyensinh.hcmus.edu.vn/blocks-sitemap.xml"
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://tuyensinh.hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://tuyensinh.hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 157479,
+          "classification": "html",
+          "note": "HTML; title='Trang chủ - Cổng thông tin tuyển sinh Trường Đại học Khoa học tự nhiên - ĐHQG-HCM'; 151 liên kết. Feed khai báo: https://tuyensinh.hcmus.edu.vn/feed/, https://tuyensinh.hcmus.edu.vn/comments/feed/, https://tuyensinh.hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftuyensinh.hcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://tuyensinh.hcmus.edu.vn/feed/",
+          "final_url": "https://tuyensinh.hcmus.edu.vn/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 731565,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 40 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://tuyensinh.hcmus.edu.vn/news/feed/",
+          "final_url": "https://tuyensinh.hcmus.edu.vn/news/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 683,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 0 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://tuyensinh.hcmus.edu.vn/feed",
+          "final_url": "https://tuyensinh.hcmus.edu.vn/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 731532,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 40 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://tuyensinh.hcmus.edu.vn/rss.xml",
+          "final_url": "https://tuyensinh.hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 157478,
+          "classification": "html",
+          "note": "HTML; title='Trang chủ - Cổng thông tin tuyển sinh Trường Đại học Khoa học tự nhiên - ĐHQG-HCM'; 151 liên kết. Feed khai báo: https://tuyensinh.hcmus.edu.vn/feed/, https://tuyensinh.hcmus.edu.vn/comments/feed/, https://tuyensinh.hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftuyensinh.hcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://tuyensinh.hcmus.edu.vn/atom.xml",
+          "final_url": "https://tuyensinh.hcmus.edu.vn",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 157496,
+          "classification": "html",
+          "note": "HTML; title='Trang chủ - Cổng thông tin tuyển sinh Trường Đại học Khoa học tự nhiên - ĐHQG-HCM'; 151 liên kết. Feed khai báo: https://tuyensinh.hcmus.edu.vn/feed/, https://tuyensinh.hcmus.edu.vn/comments/feed/, https://tuyensinh.hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Ftuyensinh.hcmus.edu.vn%2F&format=xml"
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://tuyensinh.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://tuyensinh.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 200,
+          "content_type": "application/json; charset=utf-8",
+          "bytes": 5900,
+          "classification": "json_api",
+          "note": "JSON có cấu trúc danh sách, 1 phần tử ở phản hồi thử nghiệm."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    },
+    {
+      "source_id": "svnckh",
+      "source_name": "Nghiên cứu khoa học sinh viên (SVNCKH)",
+      "base_url": "https://svnckhcn.hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:26:45+07:00",
+      "recommendation": "rss_atom",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://svnckhcn.hcmus.edu.vn/robots.txt",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/robots.txt",
+          "status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "bytes": 122,
+          "classification": "robots_txt",
+          "note": "robots.txt đọc được; 1 dòng Disallow; 1 Sitemap được khai báo."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://svnckhcn.hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/sitemap.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 53450,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://svnckhcn.hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/sitemap_index.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 53447,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://svnckhcn.hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/wp-sitemap.xml",
+          "status": 200,
+          "content_type": "application/xml; charset=utf-8",
+          "bytes": 755,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 6 sitemap con. Ví dụ: https://svnckhcn.hcmus.edu.vn/wp-sitemap-posts-post-1.xml; https://svnckhcn.hcmus.edu.vn/wp-sitemap-posts-page-1.xml; https://svnckhcn.hcmus.edu.vn/wp-sitemap-posts-blocks-1.xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://svnckhcn.hcmus.edu.vn/feed/",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 37353,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 10 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://svnckhcn.hcmus.edu.vn/news/feed/",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/news/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 693,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 0 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://svnckhcn.hcmus.edu.vn/feed",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 37353,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 10 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://svnckhcn.hcmus.edu.vn/rss.xml",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/rss.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 53451,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://svnckhcn.hcmus.edu.vn/atom.xml",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/atom.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 53440,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://svnckhcn.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 200,
+          "content_type": "application/json; charset=utf-8",
+          "bytes": 3524,
+          "classification": "json_api",
+          "note": "JSON có cấu trúc danh sách, 1 phần tử ở phản hồi thử nghiệm."
+        },
+        {
+          "label": "listing",
+          "url": "https://svnckhcn.hcmus.edu.vn/danh-muc/thong-bao-tin-tuc/feed/",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/danh-muc/thong-bao-tin-tuc/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 56693,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 10 mục feed."
+        },
+        {
+          "label": "listing",
+          "url": "https://svnckhcn.hcmus.edu.vn/danh-muc/tin-tuc/feed/",
+          "final_url": "https://svnckhcn.hcmus.edu.vn/danh-muc/tin-tuc/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 47799,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 8 mục feed."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    },
+    {
+      "source_id": "doantn",
+      "source_name": "Đoàn trường - Hội Sinh viên HCMUS",
+      "base_url": "https://doantn.hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:26:58+07:00",
+      "recommendation": "rss_atom",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://doantn.hcmus.edu.vn/robots.txt",
+          "final_url": "https://doantn.hcmus.edu.vn/robots.txt",
+          "status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "bytes": 120,
+          "classification": "robots_txt",
+          "note": "robots.txt đọc được; 1 dòng Disallow; 1 Sitemap được khai báo."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://doantn.hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://doantn.hcmus.edu.vn/wp-sitemap.xml",
+          "status": 200,
+          "content_type": "application/xml; charset=utf-8",
+          "bytes": 835,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 7 sitemap con. Ví dụ: https://doantn.hcmus.edu.vn/wp-sitemap-posts-post-1.xml; https://doantn.hcmus.edu.vn/wp-sitemap-posts-page-1.xml; https://doantn.hcmus.edu.vn/wp-sitemap-posts-blocks-1.xml"
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://doantn.hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://doantn.hcmus.edu.vn/sitemap_index.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 62387,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://doantn.hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://doantn.hcmus.edu.vn/wp-sitemap.xml",
+          "status": 200,
+          "content_type": "application/xml; charset=utf-8",
+          "bytes": 835,
+          "classification": "sitemap",
+          "note": "XML hợp lệ, root=sitemapindex; 7 sitemap con. Ví dụ: https://doantn.hcmus.edu.vn/wp-sitemap-posts-post-1.xml; https://doantn.hcmus.edu.vn/wp-sitemap-posts-page-1.xml; https://doantn.hcmus.edu.vn/wp-sitemap-posts-blocks-1.xml"
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://doantn.hcmus.edu.vn/feed/",
+          "final_url": "https://doantn.hcmus.edu.vn/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 20075,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 10 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://doantn.hcmus.edu.vn/news/feed/",
+          "final_url": "https://doantn.hcmus.edu.vn/news/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 766,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 0 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://doantn.hcmus.edu.vn/feed",
+          "final_url": "https://doantn.hcmus.edu.vn/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 20075,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 10 mục feed."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://doantn.hcmus.edu.vn/rss.xml",
+          "final_url": "https://doantn.hcmus.edu.vn/rss.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 62382,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://doantn.hcmus.edu.vn/atom.xml",
+          "final_url": "https://doantn.hcmus.edu.vn/atom.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 62377,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://doantn.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://doantn.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 200,
+          "content_type": "application/json; charset=utf-8",
+          "bytes": 3723,
+          "classification": "json_api",
+          "note": "JSON có cấu trúc danh sách, 1 phần tử ở phản hồi thử nghiệm."
+        },
+        {
+          "label": "listing",
+          "url": "https://doantn.hcmus.edu.vn/niem-yet-hoat-dong/",
+          "final_url": "https://doantn.hcmus.edu.vn/niem-yet-hoat-dong/",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 68527,
+          "classification": "html",
+          "note": "HTML; title='NIÊM YẾT HOẠT ĐỘNG – Đoàn trường Đại học Khoa học tự nhiên, ĐHQG-HCM'; 103 liên kết. Feed khai báo: https://doantn.hcmus.edu.vn/feed/, https://doantn.hcmus.edu.vn/comments/feed/, https://doantn.hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fdoantn.hcmus.edu.vn%2Fniem-yet-hoat-dong%2F&format=xml"
+        },
+        {
+          "label": "alternate_feed",
+          "url": "https://doantn.hcmus.edu.vn/comments/feed/",
+          "final_url": "https://doantn.hcmus.edu.vn/comments/feed/",
+          "status": 200,
+          "content_type": "application/rss+xml; charset=utf-8",
+          "bytes": 815,
+          "classification": "feed",
+          "note": "XML hợp lệ, root=rss; khoảng 0 mục feed."
+        },
+        {
+          "label": "alternate_feed",
+          "url": "https://doantn.hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fdoantn.hcmus.edu.vn%2Fniem-yet-hoat-dong%2F&format=xml",
+          "final_url": "https://doantn.hcmus.edu.vn/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fdoantn.hcmus.edu.vn%2Fniem-yet-hoat-dong%2F&format=xml",
+          "status": 200,
+          "content_type": "text/xml; charset=utf-8",
+          "bytes": 2685,
+          "classification": "xml",
+          "note": "XML hợp lệ, root=oembed."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    },
+    {
+      "source_id": "stsv",
+      "source_name": "Sổ tay Sinh viên HCMUS",
+      "base_url": "https://stsv.hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:27:09+07:00",
+      "recommendation": "html_parser",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://stsv.hcmus.edu.vn/robots.txt",
+          "final_url": "https://stsv.hcmus.edu.vn/robots.txt",
+          "status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "bytes": 66,
+          "classification": "robots_txt",
+          "note": "robots.txt đọc được; 0 dòng Disallow; 0 Sitemap được khai báo."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://stsv.hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://stsv.hcmus.edu.vn/sitemap.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 20238,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://stsv.hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://stsv.hcmus.edu.vn/sitemap_index.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 20238,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://stsv.hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://stsv.hcmus.edu.vn/wp-sitemap.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 20238,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://stsv.hcmus.edu.vn/feed/",
+          "final_url": "https://stsv.hcmus.edu.vn/feed/",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 20238,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://stsv.hcmus.edu.vn/news/feed/",
+          "final_url": "https://stsv.hcmus.edu.vn/news/feed/",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 19975,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://stsv.hcmus.edu.vn/feed",
+          "final_url": "https://stsv.hcmus.edu.vn/feed",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 20238,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://stsv.hcmus.edu.vn/rss.xml",
+          "final_url": "https://stsv.hcmus.edu.vn/rss.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 20238,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://stsv.hcmus.edu.vn/atom.xml",
+          "final_url": "https://stsv.hcmus.edu.vn/atom.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 20238,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://stsv.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://stsv.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 19975,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "listing",
+          "url": "https://stsv.hcmus.edu.vn/",
+          "final_url": "https://stsv.hcmus.edu.vn/",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 43579,
+          "classification": "html",
+          "note": "HTML; title='Sổ tay Sinh viên · Sổ tay Sinh viên'; 90 liên kết."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    },
+    {
+      "source_id": "research",
+      "source_name": "Cổng thông tin nghiên cứu HCMUS",
+      "base_url": "https://research.hcmus.edu.vn/",
+      "tested_at": "2026-10-17T15:27:24+07:00",
+      "recommendation": "html_parser",
+      "results": [
+        {
+          "label": "robots",
+          "url": "https://research.hcmus.edu.vn/robots.txt",
+          "final_url": "https://research.hcmus.edu.vn/robots.txt",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113328,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "sitemap",
+          "url": "https://research.hcmus.edu.vn/sitemap.xml",
+          "final_url": "https://research.hcmus.edu.vn/sitemap.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113256,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "sitemap_index",
+          "url": "https://research.hcmus.edu.vn/sitemap_index.xml",
+          "final_url": "https://research.hcmus.edu.vn/sitemap_index.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113320,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_sitemap",
+          "url": "https://research.hcmus.edu.vn/wp-sitemap.xml",
+          "final_url": "https://research.hcmus.edu.vn/wp-sitemap.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113236,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://research.hcmus.edu.vn/feed/",
+          "final_url": "https://research.hcmus.edu.vn/feed/",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113230,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://research.hcmus.edu.vn/news/feed/",
+          "final_url": "https://research.hcmus.edu.vn/news/feed/",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113212,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://research.hcmus.edu.vn/feed",
+          "final_url": "https://research.hcmus.edu.vn/feed",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113189,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "rss_feed",
+          "url": "https://research.hcmus.edu.vn/rss.xml",
+          "final_url": "https://research.hcmus.edu.vn/rss.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113241,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "atom_feed",
+          "url": "https://research.hcmus.edu.vn/atom.xml",
+          "final_url": "https://research.hcmus.edu.vn/atom.xml",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113402,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "wordpress_api",
+          "url": "https://research.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "final_url": "https://research.hcmus.edu.vn/wp-json/wp/v2/posts?per_page=1",
+          "status": 404,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 113408,
+          "classification": "not_found",
+          "note": "HTTP 404."
+        },
+        {
+          "label": "listing",
+          "url": "https://research.hcmus.edu.vn/",
+          "final_url": "https://research.hcmus.edu.vn/",
+          "status": 200,
+          "content_type": "text/html; charset=utf-8",
+          "bytes": 4841551,
+          "classification": "html",
+          "note": "HTML; title='Science & Innovation@VNUHCM-US'; 90 liên kết."
+        }
+      ],
+      "warnings": [],
+      "note": "Audit chỉ kiểm tra các endpoint phổ biến và URL danh mục đã cấu hình; không chứng minh rằng mọi endpoint có thể tìm thấy đã được liệt kê."
+    }
+  ],
+  "warnings": []
+}

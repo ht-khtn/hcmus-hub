@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "user_agent": "HCMUSHub/0.1 (personal student information aggregator; polite low-volume fetching)",
+  "request_timeout_seconds": 20,
+  "delay_between_requests_seconds": 0.8,
+  "max_response_bytes": 5000000,
+  "sources": [
+    {
+      "id": "fit",
+      "name": "Khoa Công nghệ Thông tin (FIT)",
+      "owner": "FIT - HCMUS",
+      "base_url": "https://www.fit.hcmus.edu.vn/",
+      "kind": "announcements",
+      "enabled": true,
+      "max_pages": 2,
+      "max_details_per_sync": 8,
+      "listings": [
+        {
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-chung",
+          "category": "Thông báo chung",
+          "selectors": [
+            "a[href*='/beta/tin-tuc/d/']",
+            "a[href*='/tin-tuc/d/']"
+          ]
+        },
+        {
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-tin-hoc-bong",
+          "category": "Học bổng",
+          "selectors": [
+            "a[href*='/beta/tin-tuc/d/']",
+            "a[href*='/tin-tuc/d/']"
+          ]
+        },
+        {
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-he-chinh-quy",
+          "category": "Học vụ - chương trình chuẩn",
+          "selectors": [
+            "a[href*='/beta/tin-tuc/d/']",
+            "a[href*='/tin-tuc/d/']"
+          ]
+        },
+        {
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/hoat-dong-sinh-vien",
+          "category": "Hoạt động sinh viên",
+          "selectors": [
+            "a[href*='/beta/tin-tuc/d/']",
+            "a[href*='/tin-tuc/d/']"
+          ]
+        },
+        {
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-bao-he-hoan-chinh",
+          "category": "Học vụ - chương trình hoàn chỉnh",
+          "selectors": [
+            "a[href*='/beta/tin-tuc/d/']",
+            "a[href*='/tin-tuc/d/']"
+          ]
+        },
+        {
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/hoi-thao-hoi-nghi",
+          "category": "Hội thảo - hội nghị",
+          "selectors": [
+            "a[href*='/beta/tin-tuc/d/']",
+            "a[href*='/tin-tuc/d/']"
+          ]
+        },
+        {
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/thong-tin-tuyen-dung",
+          "category": "Tuyển dụng - thực tập",
+          "selectors": [
+            "a[href*='/beta/tin-tuc/d/']",
+            "a[href*='/tin-tuc/d/']"
+          ]
+        },
+        {
+          "url": "https://www.fit.hcmus.edu.vn/beta/tin-tuc/c/tot-nghiep-qui-trinh-thuc-hien",
+          "category": "Tốt nghiệp",
+          "selectors": [
+            "a[href*='/beta/tin-tuc/d/']",
+            "a[href*='/tin-tuc/d/']"
+          ]
+        }
+      ],
+      "notes": "Các đường dẫn danh mục đã được xác minh qua trang danh mục FIT. Đường dẫn bài chi tiết theo dạng /beta/tin-tuc/d/<slug>. Cần chạy lệnh audit ở máy có Internet để xác nhận endpoint hiện đang trả về gì. Danh mục Hoạt động sinh viên cũng đã được xác minh qua kết quả công khai."
+    },
+    {
+      "id": "ctsv",
+      "name": "Phòng Công tác Sinh viên",
+      "owner": "CTSV - HCMUS",
+      "base_url": "https://ctsv.hcmus.edu.vn/",
+      "kind": "announcements",
+      "enabled": true,
+      "max_pages": 1,
+      "max_details_per_sync": 30,
+      "listings": [
+        {
+          "url": "https://ctsv.hcmus.edu.vn/sitemap.xml",
+          "category": "Thông báo Công tác Sinh viên",
+          "selectors": [],
+          "mode": "sitemap",
+          "link_patterns": [
+            "/news/"
+          ]
+        }
+      ],
+      "notes": "Audit ngày 15/10/2026 xác nhận sitemap.xml HTTP 200, XML root=urlset; trang chủ HTTP 200 nhưng bộ audit không thấy thẻ liên kết. Tạm dùng sitemap để tìm URL cùng đường dẫn /news/ rồi lấy bài chi tiết. Cần kiểm tra số URL thực tế và chất lượng đồng bộ sau lần sync đầu."
+    },
+    {
+      "id": "hcmus",
+      "name": "Website chính HCMUS",
+      "owner": "Trường ĐH Khoa học Tự nhiên",
+      "base_url": "https://hcmus.edu.vn/",
+      "kind": "announcements",
+      "enabled": true,
+      "max_pages": 1,
+      "max_details_per_sync": 5,
+      "listings": [
+        {
+          "url": "https://hcmus.edu.vn/rss.xml",
+          "category": "Thông báo cấp trường",
+          "selectors": [],
+          "mode": "feed"
+        }
+      ],
+      "notes": "Audit ngày 15/10/2026: /rss.xml HTTP 200 và XML root=rss; /feed/ trả HTML nên không dùng làm feed; WordPress REST API /wp-json/wp/v2/posts?per_page=1 cũng trả danh sách JSON. Phiên bản này ưu tiên RSS đã xác minh và giữ HTML làm nguồn bổ sung. v0.5: bỏ hai listing HTML tổng quát vì chúng thu nhầm các trang danh mục/giới thiệu như /category/nghien-cuu, /tong-quan-hoat-dong-nghien-cuu vào luồng thông báo. Hiện ưu tiên RSS đã xác minh; chỉ bổ sung HTML khi selector bài viết được kiểm chứng riêng."
+    },
+    {
+      "id": "pdt",
+      "name": "Phòng Đào tạo HCMUS",
+      "owner": "Phòng Đào tạo - HCMUS",
+      "base_url": "https://hcmus.edu.vn/",
+      "kind": "announcements",
+      "enabled": true,
+      "max_pages": 1,
+      "max_details_per_sync": 8,
+      "listings": [
+        {
+          "url": "https://hcmus.edu.vn/phong-dao-tao/",
+          "category": "Học vụ - Phòng Đào tạo",
+          "selectors": [
+            "article h1 a",
+            "article h2 a",
+            "article h3 a",
+            ".entry-title a",
+            ".post-title a",
+            ".news-item a"
+          ]
+        }
+      ],
+      "notes": "Nguồn ưu tiên cao: trang Phòng Đào tạo có các khối thông báo Tân sinh viên/Đại học/Cao đẳng và bài viết gần đây. Cấu trúc selector cần kiểm thử tại máy có Internet."
+    },
+    {
+      "id": "tuyensinh",
+      "name": "Cổng thông tin Tuyển sinh HCMUS",
+      "owner": "Tuyển sinh - HCMUS",
+      "base_url": "https://tuyensinh.hcmus.edu.vn/",
+      "kind": "announcements",
+      "enabled": true,
+      "max_pages": 1,
+      "max_details_per_sync": 5,
+      "listings": [
+        {
+          "url": "https://tuyensinh.hcmus.edu.vn/feed/",
+          "category": "Thông báo tuyển sinh",
+          "selectors": [],
+          "mode": "feed"
+        }
+      ],
+      "notes": "Audit ngày 15/10/2026 xác nhận /feed/ và WordPress REST API /wp-json/wp/v2/posts?per_page=1 trả RSS/JSON hợp lệ. Ưu tiên feed; trang chủ là phương án bổ sung để thử lấy bài không có trong feed. v0.5: tắt listing HTML bổ sung vì audit cho thấy cùng URL bài viết đã được RSS phát hiện; tránh tạo liên kết nguồn thứ hai chỉ khác nhãn phương pháp lấy dữ liệu."
+    },
+    {
+      "id": "svnckh",
+      "name": "Nghiên cứu khoa học sinh viên (SVNCKH)",
+      "owner": "Đoàn - Hội HCMUS / SVNCKH",
+      "base_url": "https://svnckhcn.hcmus.edu.vn/",
+      "kind": "announcements",
+      "enabled": true,
+      "max_pages": 1,
+      "max_details_per_sync": 8,
+      "listings": [
+        {
+          "url": "https://svnckhcn.hcmus.edu.vn/danh-muc/thong-bao-tin-tuc/feed/",
+          "category": "Thông báo nghiên cứu khoa học",
+          "selectors": [],
+          "mode": "feed"
+        },
+        {
+          "url": "https://svnckhcn.hcmus.edu.vn/danh-muc/tin-tuc/feed/",
+          "category": "Tin tức nghiên cứu khoa học",
+          "selectors": [],
+          "mode": "feed"
+        }
+      ],
+      "notes": "Audit ngày 15/10/2026 xác nhận cả hai RSS danh mục trả XML root=rss; WordPress REST API cũng trả JSON. Sử dụng RSS riêng theo danh mục để giảm nhiễu."
+    },
+    {
+      "id": "doantn",
+      "name": "Đoàn trường - Hội Sinh viên HCMUS",
+      "owner": "Đoàn - Hội HCMUS",
+      "base_url": "https://doantn.hcmus.edu.vn/",
+      "kind": "announcements",
+      "enabled": true,
+      "max_pages": 1,
+      "max_details_per_sync": 8,
+      "listings": [
+        {
+          "url": "https://doantn.hcmus.edu.vn/news/feed/",
+          "category": "Tin tức Đoàn-Hội",
+          "selectors": [],
+          "mode": "feed"
+        },
+        {
+          "url": "https://doantn.hcmus.edu.vn/feed/",
+          "category": "Tin mới Đoàn-Hội",
+          "selectors": [],
+          "mode": "feed"
+        },
+        {
+          "url": "https://doantn.hcmus.edu.vn/niem-yet-hoat-dong/",
+          "category": "Niêm yết hoạt động",
+          "selectors": [
+            "article h1 a",
+            "article h2 a",
+            "article h3 a",
+            ".entry-title a",
+            ".post-title a"
+          ],
+          "mode": "html"
+        }
+      ],
+      "notes": "Audit ngày 15/10/2026 xác nhận /feed/, /news/feed/ và WordPress REST API trả dữ liệu feed/JSON. Giữ trang niêm yết hoạt động dạng HTML để kiểm tra các lịch hoạt động có thể không nằm trong news feed."
+    },
+    {
+      "id": "stsv",
+      "name": "Sổ tay Sinh viên HCMUS",
+      "owner": "HCMUS",
+      "base_url": "https://stsv.hcmus.edu.vn/",
+      "kind": "reference",
+      "enabled": false,
+      "max_pages": 1,
+      "max_details_per_sync": 0,
+      "listings": [
+        {
+          "url": "https://stsv.hcmus.edu.vn/",
+          "category": "Nội dung tra cứu",
+          "selectors": []
+        }
+      ],
+      "notes": "Nguồn tra cứu quy chế/chính sách, không trộn mặc định vào luồng thông báo mới. Có thể bật khi muốn theo dõi mục 'Mới cập nhật'."
+    },
+    {
+      "id": "research",
+      "name": "Cổng thông tin nghiên cứu HCMUS",
+      "owner": "HCMUS",
+      "base_url": "https://research.hcmus.edu.vn/",
+      "kind": "reference",
+      "enabled": false,
+      "max_pages": 1,
+      "max_details_per_sync": 0,
+      "listings": [
+        {
+          "url": "https://research.hcmus.edu.vn/",
+          "category": "Thông tin nghiên cứu",
+          "selectors": []
+        }
+      ],
+      "notes": "Trang thiên về dữ liệu công bố/nghiên cứu, không phải nguồn thông báo chính. Chỉ bật sau khi chốt use case."
+    }
+  ]
+}

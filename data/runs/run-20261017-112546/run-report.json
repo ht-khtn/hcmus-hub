@@ -1,0 +1,417 @@
+{
+  "version": "0.8",
+  "started_at": "2026-10-17T11:25:46+07:00",
+  "config": "D:\\app\\hcmus-hub\\v0.8\\config\\sources.json",
+  "database": "D:\\app\\hcmus-hub\\v0.8\\data\\hcmus_hub.sqlite3",
+  "output_directory": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546",
+  "pre_run_backup": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\backups\\hcmus_hub.pre-run-all-20261017-112546-227621.sqlite3",
+  "initial_counts": {
+    "articles": 511,
+    "unread": 480,
+    "sources": 7
+  },
+  "settings": {
+    "delay_seconds": 1.0,
+    "max_details_per_source": 30,
+    "max_items_per_listing": 50,
+    "enrich_details": 100,
+    "audit_includes_disabled_reference_sources": true,
+    "sync_includes_enabled_sources_only": true
+  },
+  "audit_json_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\audit\\source-audit.json",
+  "audit_markdown_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\audit\\source-audit.md",
+  "audit_sources": [
+    {
+      "source_id": "fit",
+      "recommendation": "html_parser",
+      "error": null,
+      "http_200": 8,
+      "probes": 18
+    },
+    {
+      "source_id": "ctsv",
+      "recommendation": "manual_review_or_browser",
+      "error": null,
+      "http_200": 2,
+      "probes": 10
+    },
+    {
+      "source_id": "hcmus",
+      "recommendation": "rss_atom",
+      "error": null,
+      "http_200": 10,
+      "probes": 11
+    },
+    {
+      "source_id": "pdt",
+      "recommendation": "rss_atom",
+      "error": null,
+      "http_200": 12,
+      "probes": 13
+    },
+    {
+      "source_id": "tuyensinh",
+      "recommendation": "rss_atom",
+      "error": null,
+      "http_200": 10,
+      "probes": 10
+    },
+    {
+      "source_id": "svnckh",
+      "recommendation": "rss_atom",
+      "error": null,
+      "http_200": 8,
+      "probes": 12
+    },
+    {
+      "source_id": "doantn",
+      "recommendation": "rss_atom",
+      "error": null,
+      "http_200": 10,
+      "probes": 13
+    },
+    {
+      "source_id": "stsv",
+      "recommendation": "html_parser",
+      "error": null,
+      "http_200": 2,
+      "probes": 11
+    },
+    {
+      "source_id": "research",
+      "recommendation": "html_parser",
+      "error": null,
+      "http_200": 1,
+      "probes": 11
+    }
+  ],
+  "repair_plan_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\repair-plan.json",
+  "repair": {
+    "status": "applied",
+    "planned_links_to_remove": 0,
+    "planned_articles_to_delete": 0,
+    "protected_navigation_links": 0,
+    "unresolved_duplicate_groups": 0,
+    "plan_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\repair-plan.json",
+    "links_removed": 0,
+    "articles_deleted": [],
+    "backup_path": "D:\\app\\hcmus-hub\\v0.8\\data\\hcmus_hub.before-repair-20261017-112806-979774.sqlite3",
+    "result_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\repair-result.json",
+    "message": "Đã áp dụng sửa chữa và tạo bản sao lưu. Các liên kết đa danh mục hợp lệ được giữ lại."
+  },
+  "text_normalization": {
+    "articles_changed": 0,
+    "article_sources_changed": 0,
+    "revisions_changed": 0,
+    "fields_changed": 0
+  },
+  "enrichment": {
+    "candidate_records": 412,
+    "limit": 100,
+    "details_attempted": 100,
+    "http_fetched": 100,
+    "title_extracted": 100,
+    "date_extracted": 100,
+    "body_extracted": 87,
+    "body_chars_extracted": 149031,
+    "empty_body_after_fetch": 13,
+    "errors": [],
+    "by_source": {
+      "ctsv": {
+        "source_name": "Phòng Công tác Sinh viên",
+        "attempted": 28,
+        "http_fetched": 28,
+        "title_extracted": 28,
+        "date_extracted": 28,
+        "body_extracted": 28,
+        "empty_body_after_fetch": 0,
+        "errors": 0
+      },
+      "fit": {
+        "source_name": "Khoa Công nghệ Thông tin (FIT)",
+        "attempted": 46,
+        "http_fetched": 46,
+        "title_extracted": 46,
+        "date_extracted": 46,
+        "body_extracted": 41,
+        "empty_body_after_fetch": 5,
+        "errors": 0
+      },
+      "hcmus": {
+        "source_name": "Website chính HCMUS",
+        "attempted": 26,
+        "http_fetched": 26,
+        "title_extracted": 26,
+        "date_extracted": 26,
+        "body_extracted": 18,
+        "empty_body_after_fetch": 8,
+        "errors": 0
+      }
+    }
+  },
+  "fetcher_warnings": [],
+  "quality_metrics": {
+    "articles": 514,
+    "empty_content": 122,
+    "empty_summary": 196,
+    "neither_content_nor_summary": 2,
+    "missing_published_at": 22,
+    "unverified_date": 30,
+    "slug_placeholder_title": 9,
+    "html_entities": 13,
+    "very_short_content": 10
+  },
+  "quality_json_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\quality\\quality-report.json",
+  "quality_markdown_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\quality\\quality-report.md",
+  "sync": [
+    {
+      "source_id": "fit",
+      "source_name": "Khoa Công nghệ Thông tin (FIT)",
+      "listings_succeeded": 16,
+      "articles_discovered": 153,
+      "details_attempted": 30,
+      "details_fetched": 30,
+      "details_title_extracted": 30,
+      "details_date_extracted": 30,
+      "details_body_extracted": 30,
+      "details_empty_body_after_fetch": 0,
+      "details_body_chars_extracted": 45932,
+      "upsert_events": 183,
+      "listing_outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 153
+      },
+      "detail_outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 30
+      },
+      "outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 183
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "source_id": "ctsv",
+      "source_name": "Phòng Công tác Sinh viên",
+      "listings_succeeded": 1,
+      "articles_discovered": 50,
+      "details_attempted": 30,
+      "details_fetched": 30,
+      "details_title_extracted": 30,
+      "details_date_extracted": 30,
+      "details_body_extracted": 30,
+      "details_empty_body_after_fetch": 0,
+      "details_body_chars_extracted": 100142,
+      "upsert_events": 80,
+      "listing_outcomes": {
+        "new": 3,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 47
+      },
+      "detail_outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 30
+      },
+      "outcomes": {
+        "new": 3,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 77
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "source_id": "hcmus",
+      "source_name": "Website chính HCMUS",
+      "listings_succeeded": 1,
+      "articles_discovered": 49,
+      "details_attempted": 30,
+      "details_fetched": 30,
+      "details_title_extracted": 30,
+      "details_date_extracted": 30,
+      "details_body_extracted": 29,
+      "details_empty_body_after_fetch": 1,
+      "details_body_chars_extracted": 78939,
+      "upsert_events": 79,
+      "listing_outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 49
+      },
+      "detail_outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 30
+      },
+      "outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 79
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "source_id": "pdt",
+      "source_name": "Phòng Đào tạo HCMUS",
+      "listings_succeeded": 1,
+      "articles_discovered": 38,
+      "details_attempted": 30,
+      "details_fetched": 30,
+      "details_title_extracted": 30,
+      "details_date_extracted": 30,
+      "details_body_extracted": 22,
+      "details_empty_body_after_fetch": 8,
+      "details_body_chars_extracted": 17937,
+      "upsert_events": 68,
+      "listing_outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 38
+      },
+      "detail_outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 30
+      },
+      "outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 68
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_name": "Cổng thông tin Tuyển sinh HCMUS",
+      "listings_succeeded": 1,
+      "articles_discovered": 40,
+      "details_attempted": 30,
+      "details_fetched": 30,
+      "details_title_extracted": 30,
+      "details_date_extracted": 30,
+      "details_body_extracted": 30,
+      "details_empty_body_after_fetch": 0,
+      "details_body_chars_extracted": 202879,
+      "upsert_events": 70,
+      "listing_outcomes": {
+        "new": 0,
+        "updated_content": 14,
+        "linked_duplicate": 0,
+        "unchanged": 26
+      },
+      "detail_outcomes": {
+        "new": 0,
+        "updated_content": 30,
+        "linked_duplicate": 0,
+        "unchanged": 0
+      },
+      "outcomes": {
+        "new": 0,
+        "updated_content": 44,
+        "linked_duplicate": 0,
+        "unchanged": 26
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "source_id": "svnckh",
+      "source_name": "Nghiên cứu khoa học sinh viên (SVNCKH)",
+      "listings_succeeded": 2,
+      "articles_discovered": 16,
+      "details_attempted": 16,
+      "details_fetched": 16,
+      "details_title_extracted": 16,
+      "details_date_extracted": 0,
+      "details_body_extracted": 13,
+      "details_empty_body_after_fetch": 3,
+      "details_body_chars_extracted": 14761,
+      "upsert_events": 32,
+      "listing_outcomes": {
+        "new": 0,
+        "updated_content": 0,
+        "linked_duplicate": 0,
+        "unchanged": 16
+      },
+      "detail_outcomes": {
+        "new": 0,
+        "updated_content": 13,
+        "linked_duplicate": 0,
+        "unchanged": 3
+      },
+      "outcomes": {
+        "new": 0,
+        "updated_content": 13,
+        "linked_duplicate": 0,
+        "unchanged": 19
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "source_id": "doantn",
+      "source_name": "Đoàn trường - Hội Sinh viên HCMUS",
+      "listings_succeeded": 3,
+      "articles_discovered": 17,
+      "details_attempted": 17,
+      "details_fetched": 17,
+      "details_title_extracted": 12,
+      "details_date_extracted": 12,
+      "details_body_extracted": 16,
+      "details_empty_body_after_fetch": 1,
+      "details_body_chars_extracted": 28198,
+      "upsert_events": 34,
+      "listing_outcomes": {
+        "new": 0,
+        "updated_content": 2,
+        "linked_duplicate": 0,
+        "unchanged": 15
+      },
+      "detail_outcomes": {
+        "new": 0,
+        "updated_content": 12,
+        "linked_duplicate": 0,
+        "unchanged": 5
+      },
+      "outcomes": {
+        "new": 0,
+        "updated_content": 14,
+        "linked_duplicate": 0,
+        "unchanged": 20
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "final_counts": {
+    "articles": 514,
+    "unread": 483,
+    "sources": 7
+  },
+  "export_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\hcmus-hub-export.json",
+  "sync_sources_succeeded": 7,
+  "sync_sources_with_errors": [],
+  "finished_at": "2026-10-17T11:34:19+07:00",
+  "run_report_json_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\run-report.json",
+  "run_report_markdown_path": "D:\\app\\hcmus-hub\\v0.8\\data\\runs\\run-20261017-112546\\run-report.md"
+}

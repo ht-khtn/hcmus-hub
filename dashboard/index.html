@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f8fa" />
+  <title>HCMUS Hub — Không gian thông tin cá nhân</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">H</div><div><div class="brand-name">HCMUS Hub</div><div class="brand-caption">Không gian thông tin cá nhân</div></div></div>
+      <label class="sr-only" for="academic-year-filter">Lọc theo năm học</label>
+      <select id="academic-year-filter" class="source-select academic-year-select" aria-label="Lọc theo năm học">
+        <option value="">Từ trước đến nay</option>
+      </select>
+      <div class="side-label inbox-label">HỘP THÔNG BÁO</div>
+      <nav class="nav-list" aria-label="Bộ lọc thông báo">
+        <button class="nav-item active" data-mode="all"><span class="nav-icon">◫</span><span>Tất cả thông báo</span><span class="nav-count" id="nav-total">—</span></button>
+        <button class="nav-item" data-mode="unread"><span class="nav-icon">●</span><span>Chưa đọc</span><span class="nav-count" id="nav-unread">—</span></button>
+        <button class="nav-item" data-mode="favorites"><span class="nav-icon">☆</span><span>Đã lưu</span><span class="nav-count" id="nav-favorites">—</span></button>
+        <button class="nav-item" data-mode="review"><span class="nav-icon">⌕</span><span>Cần kiểm tra dữ liệu</span><span class="nav-count" id="nav-review">—</span></button>
+      </nav>
+      <div class="side-label source-label">NGUỒN THÔNG TIN</div>
+      <label class="sr-only" for="source-filter">Lọc theo nguồn</label>
+      <select id="source-filter" class="source-select"><option value="">Tất cả nguồn</option></select>
+      <div id="source-list" class="source-list"></div>
+      <div class="sidebar-footer"><span class="status-dot"></span><span id="connection-status">Đang kết nối CSDL cục bộ…</span></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div><div class="eyebrow">CỔNG THÔNG TIN SINH VIÊN</div><h1>Thông báo của bạn</h1><p class="subheading">Các thông báo từ nhiều nguồn, tập trung trong một luồng.</p></div>
+        <div class="topbar-actions"><span class="local-pill"><span class="status-dot"></span> Dữ liệu trên máy này</span><button id="mark-all-read" class="button secondary mark-all-read" title="Đánh dấu tất cả thông báo là đã đọc">✓ Đánh dấu tất cả đã đọc</button><button id="refresh-btn" class="icon-button" title="Tải lại dữ liệu" aria-label="Tải lại dữ liệu">↻</button></div>
+      </header>
+
+      <section class="workspace">
+        <div class="feed-column">
+          <div class="feed-toolbar">
+            <div class="search-wrap"><span class="search-icon">⌕</span><input id="search-input" type="search" placeholder="Tìm tiêu đề, nội dung, học bổng…" autocomplete="off" /></div>
+            <label class="sr-only" for="sort-category">Lọc danh mục</label>
+            <select id="sort-category" class="compact-select"><option value="">Mọi danh mục</option></select>
+          </div>
+          <div class="feed-meta"><div><strong id="feed-heading">Tất cả thông báo</strong><span id="feed-subcount" class="muted"></span></div><span id="page-label" class="page-label"></span></div>
+          <div id="feed-list" class="feed-list"><div class="loading"><span class="spinner"></span>Đang đọc thông báo…</div></div>
+          <div class="pagination"><button id="prev-page" class="button secondary" disabled>← Trước</button><span id="pagination-label">Trang 1</span><button id="next-page" class="button secondary" disabled>Tiếp →</button></div>
+        </div>
+        <aside id="detail-panel" class="detail-panel"><div class="detail-empty"><div class="empty-icon">↖</div><h2>Chọn một thông báo</h2><p>Nội dung bài viết sẽ hiển thị ngay tại đây. Bạn chỉ cần mở trang gốc khi cần biểu mẫu hoặc tệp đính kèm.</p></div></aside>
+      </section>
+      <footer class="main-footer">HCMUS Hub · Công cụ cá nhân, không phải website chính thức của Trường. Luôn đối chiếu thời hạn và hướng dẫn với nguồn gốc.</footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>

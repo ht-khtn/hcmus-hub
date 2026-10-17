@@ -1,0 +1,318 @@
+{
+  "database": "D:\\app\\hcmus-hub\\v0.8\\data\\hcmus_hub.sqlite3",
+  "mode": "dry_run",
+  "links_total": 549,
+  "links_to_remove": [],
+  "navigation_links_to_remove": [],
+  "protected_navigation_links": [],
+  "articles_to_delete": [],
+  "articles_retained_due_to_other_links": [],
+  "protected_navigation_articles": [],
+  "exact_duplicate_groups_remaining_after_plan": 0,
+  "source_url_groups_with_multiple_rows_after_plan": 30,
+  "unresolved_duplicate_groups": [],
+  "retained_multi_category_groups": [
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-anh-van-dau-khoa",
+      "article_id": 200,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-cap-nhat-nguong-dam-bao-chat-luong",
+      "article_id": 204,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-dang-ky-ktx",
+      "article_id": 306,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-diem-chuan-cac-phuong-thuc",
+      "article_id": 201,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-hdsd-mail-sv",
+      "article_id": 305,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-ket-qua-du-dieu-kien-trung-tuyen-phuong-thuc-1a",
+      "article_id": 308,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-ket-qua-trung-tuyen-chinh-thuc",
+      "article_id": 202,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-nguyen-tac-quy-doi-tuong-duong",
+      "article_id": 203,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-thong-bao-gia-han-khai-bao-thong-tin-va-nop-ho-so",
+      "article_id": 311,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-to-hop-va-chi-tieu-phuong-thuc-2",
+      "article_id": 310,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2025-tra-cuu-ket-qua-so-tuyen-doi-voi-phuong-thuc-1b-c-d-2-va-3",
+      "article_id": 307,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-diem-chuan",
+      "article_id": 181,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-ket-qua-xet-tuyen-va-dieu-kien-trung-tuyen-phuong-thuc-1a",
+      "article_id": 188,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-phuong-huong-tuyen-sinh-trinh-do-dai-hoc-du-kien",
+      "article_id": 304,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-khao-sat-doi-voi-tan-sinh-vien",
+      "article_id": 179,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-mo-cong-dang-ky-phuong-thuc-1a",
+      "article_id": 191,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-mo-cong-nop-ho-so-minh-chung",
+      "article_id": 192,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-nop-bo-sung-ho-so-minh-chung-doi-voi-phuong-thuc-2",
+      "article_id": 185,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-thoi-gian-cong-bo-ket-qua-va-thong-tin-lien-quan-den-nhap-hoc",
+      "article_id": 182,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-to-chuc-kiem-tra-anh-van-dau-khoa",
+      "article_id": 180,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-tra-cuu-danh-sach-nop-ho-so-minh-chung-doi-voi-phuong-thuc-2",
+      "article_id": 184,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-tra-cuu-danh-sach-nop-ho-so-minh-chung-doi-voi-phuong-thuc-2-dot-bo-sung",
+      "article_id": 183,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-ve-gia-han-nop-ho-so-minh-chung",
+      "article_id": 189,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-ve-nguong-dam-bao-chat-luong-phuong-thuc-1a",
+      "article_id": 186,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-ve-nguong-dam-bao-chat-luong-phuong-thuc-2",
+      "article_id": 187,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-ve-phuong-thuc-xet-tuyen-1a",
+      "article_id": 302,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-ve-phuong-thuc-xet-tuyen-1b",
+      "article_id": 190,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-bao-ve-phuong-thuc-xet-tuyen-2",
+      "article_id": 193,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/2026-thong-tin-tuyen-sinh",
+      "article_id": 303,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    },
+    {
+      "source_id": "tuyensinh",
+      "source_url": "https://tuyensinh.hcmus.edu.vn/hoc-phi-du-kien-cho-khoa-tuyen-2025",
+      "article_id": 309,
+      "categories": [
+        "Thông báo tuyển sinh",
+        "Tuyển sinh (RSS)"
+      ],
+      "reason": "different categories retained intentionally"
+    }
+  ],
+  "removal_details": [],
+  "message": "Dry-run: chưa thay đổi CSDL. Xem kế hoạch rồi mới dùng --apply."
+}
