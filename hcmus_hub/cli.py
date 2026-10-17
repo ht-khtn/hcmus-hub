@@ -19,6 +19,7 @@ from .sync import sync_source
 from .enrich import enrich_weak_articles
 from .quality import build_quality_report, write_quality_report
 from .web_server import serve_dashboard
+from .sharing import export_snapshot, import_snapshot
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CONFIG = ROOT / "config" / "sources.json"
@@ -194,6 +195,18 @@ def _run_export(args):
         store.close()
 
 
+def _run_share_export(args):
+    report = export_snapshot(args.db, args.output, args.manifest)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+
+
+def _run_share_import(args):
+    report = import_snapshot(args.db, args.snapshot, args.manifest, apply=args.apply)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    if not args.apply:
+        print("Chế độ xem trước: CSDL chưa bị thay đổi. Chỉ thêm --apply sau khi kiểm tra báo cáo.")
+
+
 def _run_quality(args):
     report = build_quality_report(Path(args.db).expanduser().resolve())
     json_path, md_path = write_quality_report(report, Path(args.output_dir).expanduser().resolve())
@@ -294,6 +307,19 @@ def build_parser():
     export.add_argument("--db", default=str(DEFAULT_DB))
     export.add_argument("--output", default=str(ROOT / "data" / "export.json"))
     export.set_defaults(func=_run_export)
+
+    share_export = sub.add_parser("share-export", help="Xuất snapshot dữ liệu dùng chung dạng gzip")
+    share_export.add_argument("--db", default=str(DEFAULT_DB))
+    share_export.add_argument("--output", default=str(ROOT / "data" / "share-snapshot.json.gz"))
+    share_export.add_argument("--manifest", default=str(ROOT / "data" / "share-snapshot.manifest.json"))
+    share_export.set_defaults(func=_run_share_export)
+
+    share_import = sub.add_parser("share-import", help="Kiểm tra hoặc nhập snapshot dữ liệu dùng chung")
+    share_import.add_argument("--db", default=str(DEFAULT_DB))
+    share_import.add_argument("--snapshot", default=str(ROOT / "data" / "share-snapshot.json.gz"))
+    share_import.add_argument("--manifest", default=str(ROOT / "data" / "share-snapshot.manifest.json"))
+    share_import.add_argument("--apply", action="store_true", help="Ghi snapshot vào SQLite; mặc định chỉ xem trước")
+    share_import.set_defaults(func=_run_share_import)
     return parser
 
 
