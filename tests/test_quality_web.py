@@ -6,7 +6,7 @@ from hcmus_hub.models import Article, SourceConfig, ListingConfig
 from hcmus_hub.quality import build_quality_report, normalize_database_text
 from hcmus_hub.store import Store
 from hcmus_hub.textutils import clean_text
-from hcmus_hub.web_server import _api_article_detail, _api_articles, _api_stats, _mark_all_unread_read
+from hcmus_hub.web_server import _api_article_detail, _api_articles, _api_stats, _api_version, _mark_all_unread_read
 
 
 class QualityAndWebTests(unittest.TestCase):
@@ -138,6 +138,10 @@ class QualityAndWebTests(unittest.TestCase):
         stats = _api_stats(self.db)
         self.assertEqual(stats["articles"], 1)
         self.assertEqual(stats["unread"], 1)
+
+    def test_version_endpoint_returns_current_data_revision(self):
+        revision = self.store.data_revision()
+        self.assertEqual(_api_version(self.db), {"data_revision": revision})
 
 
 if __name__ == "__main__":

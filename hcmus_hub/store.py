@@ -68,6 +68,10 @@ CREATE TABLE IF NOT EXISTS article_revisions (
   summary TEXT NOT NULL,
   content TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS data_metadata (
+  key TEXT PRIMARY KEY,
+  data_revision INTEGER NOT NULL DEFAULT 0
+);
 """
 
 
@@ -100,6 +104,58 @@ class Store:
             self.conn.execute("ALTER TABLE article_sources ADD COLUMN last_detail_chars INTEGER NOT NULL DEFAULT 0")
         if "last_detail_error" not in link_columns:
             self.conn.execute("ALTER TABLE article_sources ADD COLUMN last_detail_error TEXT")
+        self.conn.execute(
+            "INSERT OR IGNORE INTO data_metadata(key, data_revision) VALUES('data_revision', 0)"
+        )
+        self.conn.executescript("""
+            CREATE TRIGGER IF NOT EXISTS trg_data_revision_article_insert
+            AFTER INSERT ON articles
+            BEGIN
+              UPDATE data_metadata SET data_revision=data_revision+1 WHERE key='data_revision';
+            END;
+            CREATE TRIGGER IF NOT EXISTS trg_data_revision_article_delete
+            AFTER DELETE ON articles
+            BEGIN
+              UPDATE data_metadata SET data_revision=data_revision+1 WHERE key='data_revision';
+            END;
+            CREATE TRIGGER IF NOT EXISTS trg_data_revision_article_update
+            AFTER UPDATE OF fingerprint, normalized_title, title, published_at,
+              published_at_source, category, summary, content, content_html,
+              attachments_json, content_hash ON articles
+            WHEN OLD.fingerprint IS NOT NEW.fingerprint
+              OR OLD.normalized_title IS NOT NEW.normalized_title
+              OR OLD.title IS NOT NEW.title
+              OR OLD.published_at IS NOT NEW.published_at
+              OR OLD.published_at_source IS NOT NEW.published_at_source
+              OR OLD.category IS NOT NEW.category
+              OR OLD.summary IS NOT NEW.summary
+              OR OLD.content IS NOT NEW.content
+              OR OLD.content_html IS NOT NEW.content_html
+              OR OLD.attachments_json IS NOT NEW.attachments_json
+              OR OLD.content_hash IS NOT NEW.content_hash
+            BEGIN
+              UPDATE data_metadata SET data_revision=data_revision+1 WHERE key='data_revision';
+            END;
+            CREATE TRIGGER IF NOT EXISTS trg_data_revision_source_insert
+            AFTER INSERT ON article_sources
+            BEGIN
+              UPDATE data_metadata SET data_revision=data_revision+1 WHERE key='data_revision';
+            END;
+            CREATE TRIGGER IF NOT EXISTS trg_data_revision_source_delete
+            AFTER DELETE ON article_sources
+            BEGIN
+              UPDATE data_metadata SET data_revision=data_revision+1 WHERE key='data_revision';
+            END;
+            CREATE TRIGGER IF NOT EXISTS trg_data_revision_source_update
+            AFTER UPDATE OF article_id, source_id, source_url, category ON article_sources
+            WHEN OLD.article_id IS NOT NEW.article_id
+              OR OLD.source_id IS NOT NEW.source_id
+              OR OLD.source_url IS NOT NEW.source_url
+              OR OLD.category IS NOT NEW.category
+            BEGIN
+              UPDATE data_metadata SET data_revision=data_revision+1 WHERE key='data_revision';
+            END;
+        """)
 
     def close(self):
         self.conn.close()
@@ -336,3 +392,9 @@ class Store:
         unread = self.conn.execute("SELECT COUNT(*) FROM articles WHERE read_at IS NULL").fetchone()[0]
         sources = self.conn.execute("SELECT COUNT(*) FROM sources").fetchone()[0]
         return {"articles": articles, "unread": unread, "sources": sources}
+
+    def data_revision(self) -> int:
+        row = self.conn.execute(
+            "SELECT data_revision FROM data_metadata WHERE key='data_revision'"
+        ).fetchone()
+        return int(row[0]) if row else 0

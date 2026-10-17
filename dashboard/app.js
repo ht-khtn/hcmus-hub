@@ -1,8 +1,10 @@
 (() => {
   const $ = (sel) => document.querySelector(sel);
-  const state = { mode: 'all', source: '', category: '', academicYear: '2026-2027', q: '', page: 1, pages: 1, total: 0, selectedId: null, selected: null, stats: null, sources: [] };
+  const state = { mode: 'all', source: '', category: '', academicYear: '2026-2027', q: '', page: 1, pages: 1, total: 0, selectedId: null, selected: null, stats: null, sources: [], dataRevision: null, pendingRevision: null };
   let searchTimer = null;
   let toastTimer = null;
+  let pollTimer = null;
+  let pollInFlight = false;
 
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const short = (value, max=130) => { const s = String(value || '').replace(/\s+/g, ' ').trim(); return s.length > max ? s.slice(0, max - 1) + '…' : s; };
@@ -122,8 +124,54 @@
     if(state.q)params.set('q',state.q); if(state.source)params.set('source',state.source); if(state.category)params.set('category',state.category); if(state.academicYear)params.set('academic_year',state.academicYear);
     try {
       const payload=await api('/api/articles?'+params.toString());
-      buildCategories(payload.items); renderList(payload);
-    } catch(err) { $('#feed-list').innerHTML=`<div class="empty-state"><strong>Không tải được thông báo</strong><span>${esc(err.message)}</span></div>`; setStatus('Lỗi đọc CSDL',false); }
+      buildCategories(payload.items); renderList(payload); return true;
+    } catch(err) { $('#feed-list').innerHTML=`<div class="empty-state"><strong>Không tải được thông báo</strong><span>${esc(err.message)}</span></div>`; setStatus('Lỗi đọc CSDL',false); return false; }
+  }
+  async function refreshFromPolling() {
+    const feedScroll = $('#feed-list').scrollTop;
+    const mainScroll = document.querySelector('.main-area')?.scrollTop || 0;
+    const selectedId = state.selectedId;
+    await loadStats();
+    if (!await loadList()) return false;
+    if (selectedId !== null && state.selectedId === selectedId) await loadDetail(selectedId, false);
+    $('#feed-list').scrollTop = feedScroll;
+    const mainArea = document.querySelector('.main-area');
+    if (mainArea) mainArea.scrollTop = mainScroll;
+    return true;
+  }
+  async function pollVersion() {
+    if (document.visibilityState !== 'visible' || pollInFlight) return;
+    pollInFlight = true;
+    try {
+      const payload = await api('/api/version');
+      const revision = Number(payload.data_revision);
+      if (!Number.isInteger(revision)) return;
+      if (state.dataRevision === null) {
+        state.dataRevision = revision;
+        state.pendingRevision = null;
+      } else if (revision !== state.dataRevision) {
+        if (state.pendingRevision === revision) {
+          if (await refreshFromPolling()) {
+            state.dataRevision = revision;
+            state.pendingRevision = null;
+          }
+        } else {
+          state.pendingRevision = revision;
+        }
+      } else {
+        state.pendingRevision = null;
+      }
+    } catch (_) {
+      // A transient polling failure must not disturb the current dashboard view.
+    } finally {
+      pollInFlight = false;
+    }
+  }
+  function startPolling() {
+    pollTimer = window.setInterval(pollVersion, 5000);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') pollVersion();
+    });
   }
   function richHtmlHasPayload(markup) {
     if (!markup) return false;
@@ -241,6 +289,6 @@
       } catch (err) { toast('Không thể đánh dấu tất cả đã đọc: ' + err.message); }
     });
   }
-  async function init(){bindEvents();try{await loadStats();await loadList();}catch(err){setStatus('Không kết nối được CSDL',false);$('#feed-list').innerHTML=`<div class="empty-state">${esc(err.message)}</div>`;}}
+  async function init(){bindEvents();try{await loadStats();await loadList();await pollVersion();startPolling();}catch(err){setStatus('Không kết nối được CSDL',false);$('#feed-list').innerHTML=`<div class="empty-state">${esc(err.message)}</div>`;}}
   init();
 })();

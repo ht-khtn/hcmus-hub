@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+import sqlite3
 from pathlib import Path
 
 from hcmus_hub.models import Article, ListingConfig, SourceConfig
@@ -27,8 +28,64 @@ class StoreTests(unittest.TestCase):
     def test_new_and_repeat_are_idempotent(self):
         a = self.make_article("https://example.edu/news/1")
         self.assertEqual(self.store.upsert_article(a), "new")
+        revision = self.store.data_revision()
         self.assertEqual(self.store.upsert_article(a), "unchanged")
         self.assertEqual(self.store.counts()["articles"], 1)
+        self.assertEqual(self.store.data_revision(), revision)
+
+    def test_data_revision_changes_for_content_and_source_relationships(self):
+        a = self.make_article("https://example.edu/news/1")
+        before = self.store.data_revision()
+        self.store.upsert_article(a)
+        after_insert = self.store.data_revision()
+        self.assertGreater(after_insert, before)
+
+        changed = self.make_article("https://example.edu/news/1", summary="Nội dung mới")
+        self.store.upsert_article(changed)
+        self.assertGreater(self.store.data_revision(), after_insert)
+
+        category = self.make_article("https://example.edu/news/1")
+        category.category = "Hoạt động sinh viên"
+        before_link = self.store.data_revision()
+        self.store.upsert_article(category)
+        self.assertGreater(self.store.data_revision(), before_link)
+
+    def test_data_revision_ignores_personal_and_operational_metadata(self):
+        a = self.make_article("https://example.edu/news/1")
+        self.store.upsert_article(a)
+        revision = self.store.data_revision()
+        article_id = self.store.conn.execute("SELECT id FROM articles").fetchone()[0]
+        self.store.conn.execute(
+            "UPDATE articles SET read_at=?, is_favorite=1, last_seen_at=? WHERE id=?",
+            ("2026-10-17T12:00:00+07:00", "2026-10-17T12:00:01+07:00", article_id),
+        )
+        self.store.conn.execute(
+            """UPDATE article_sources SET last_seen_at=?, last_detail_attempt_at=?,
+               last_detail_status=?, last_detail_chars=?, last_detail_error=?""",
+            ("2026-10-17T12:00:02+07:00", "2026-10-17T12:00:03+07:00", "body_ok", 12, None),
+        )
+        self.store.conn.commit()
+        self.assertEqual(self.store.data_revision(), revision)
+
+    def test_data_revision_migration_preserves_existing_articles(self):
+        path = Path(self.tmp.name) / "legacy.sqlite3"
+        legacy = Store(path)
+        legacy.register_source(self.source)
+        article = self.make_article("https://example.edu/news/legacy")
+        legacy.upsert_article(article)
+        legacy.close()
+        con = sqlite3.connect(path)
+        con.execute("DROP TABLE data_metadata")
+        con.commit()
+        con.close()
+
+        migrated = Store(path)
+        try:
+            self.assertEqual(migrated.counts()["articles"], 1)
+            self.assertEqual(migrated.list_articles(limit=1)[0]["title"], article.title)
+            self.assertEqual(migrated.data_revision(), 0)
+        finally:
+            migrated.close()
 
     def test_cross_source_duplicate_links_sources(self):
         self.store.register_source(SourceConfig("s2", "Nguồn hai", "Đơn vị 2", "https://other.edu/", "announcements", True, []))

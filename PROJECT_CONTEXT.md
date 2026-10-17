@@ -1,67 +1,37 @@
 # HCMUS Hub — Project Context
 
-## Công nghệ
+## Mục tiêu và công nghệ
+Ứng dụng tổng hợp thông báo HCMUS/FIT/CTSV; Python 3.11+, SQLite cục bộ, `httpx`, BeautifulSoup và dashboard HTML/CSS/JavaScript thuần. Repo root: `D:\app\hcmus-hub` (không có thư mục version).
 
-- Python 3.11+.
-- SQLite cục bộ cho dữ liệu thông báo và trạng thái cá nhân.
-- `httpx` cho HTTP async; `beautifulsoup4` cho HTML; thư viện chuẩn cho CLI, XML, SQLite và HTTP server.
-- Dashboard HTML/CSS/JavaScript chạy qua web server local, không dùng framework frontend.
+## Cấu trúc cần biết
+- `hcmus_hub/`: `cli.py`/`__main__.py` (lệnh), `config.py`/`models.py`, `fetcher.py` (HTTP, delay/retry/robots), `discovery.py`, `parsers.py`, `sync.py`, `store.py` (SQLite/upsert/migration), `enrich.py`, `quality.py`, `repair.py`, `safehtml.py`, `textutils.py`, `web_server.py` (API/dashboard).
+- `config/sources.json`: cấu hình nguồn; `dashboard/`: `index.html`, `app.js`, `styles.css`; `tests/`: kiểm thử; `docs/`: ghi chú.
+- `data/`: database, report và backup runtime; không đọc/commit/chia sẻ nếu không cần.
 
-## Cấu trúc quan trọng
+## Dữ liệu và API hiện tại
+- Các bảng chính: `sources`, `articles`, `article_sources`, `article_revisions`.
+- `articles` có cả trường nội dung chung và trạng thái cục bộ `read_at`, `is_favorite`. `article_sources` liên kết một bài với URL/nguồn/danh mục và lưu trạng thái thử tải chi tiết.
+- `article_revisions` lưu lịch sử thay đổi *theo bài*, không phải phiên bản tổng thể của database. `articles.id` là ID tự tăng cục bộ, không dùng làm ID chung giữa các máy.
+- Upsert dùng fingerprint/hash; giữ nội dung chi tiết tốt hơn nội dung listing mỏng. Migration phải tương thích database cũ.
+- API hiện có: `/api/stats`, `/api/articles`, `/api/articles/{id}`, thao tác `/read` và `/favorite`, cùng `/health`. Trong mã đã kiểm tra chưa thấy `/api/version` hay revision toàn database. Dashboard chủ yếu tải dữ liệu khi khởi động/thao tác thủ công; polling chưa được xác nhận là đã triển khai.
 
-- `hcmus_hub/`: package chính.
-  - `cli.py`, `__main__.py`: các lệnh CLI và entry point.
-  - `config.py`, `models.py`: đọc cấu hình và mô hình dữ liệu.
-  - `fetcher.py`: HTTP client, retry, delay, giới hạn phản hồi và kiểm tra `robots.txt`.
-  - `discovery.py`: audit endpoint và phân loại nguồn.
-  - `parsers.py`, `sync.py`: parse HTML/RSS/sitemap và đồng bộ bài viết.
-  - `store.py`: schema/migration và thao tác SQLite.
-  - `enrich.py`, `quality.py`, `repair.py`: làm giàu dữ liệu cũ, báo cáo chất lượng và repair an toàn.
-  - `safehtml.py`, `textutils.py`: lọc HTML và chuẩn hóa văn bản/hash.
-  - `web_server.py`: API/dashboard local.
-- `config/sources.json`: nguồn, danh mục, parser mode, giới hạn trang/chi tiết.
-- `dashboard/`: giao diện local (`index.html`, `app.js`, `styles.css`).
-- `tests/`: test parser, sync, store, CLI và dashboard.
-- `docs/`: ghi chú thay đổi giao diện/nội dung đã chốt.
-- `data/`: SQLite, báo cáo, bản export và backup runtime; không dùng làm tài liệu kiến trúc.
+## Quyết định và hướng phát triển
+- Giữ Python + SQLite; chưa chuyển sang Supabase.
+- Bảo toàn database, cấu hình nguồn, trạng thái đã đọc, yêu thích và thiết lập cục bộ. Không xóa/tạo lại database.
+- Hướng dự kiến: (1) polling cục bộ phát hiện thay đổi, (2) chia sẻ dữ liệu thông báo qua snapshot + manifest/checksum trên Cloudflare R2, (3) chỉ một tiến trình thu thập nguồn. Đây là kế hoạch, chưa coi là tính năng đã có.
+- Không upload nguyên SQLite lên cloud. Snapshot chỉ gồm trường thông báo dùng chung; khi nhập phải ghép bằng định danh ổn định như nguồn + URL/fingerprint, không dựa vào ID tự tăng. Không ghi đè `read_at`, `is_favorite` hoặc thiết lập riêng.
 
-## Luồng dữ liệu
+## Quy tắc cho coding agent (ưu tiên giảm quota)
+- Đọc file này một lần khi khởi tạo ngữ cảnh. Trong cùng phiên không đọc lại; không quét toàn repo, không nghiên cứu web, không tự lập kế hoạch dài dòng.
+- Mỗi nhiệm vụ chỉ mở file được chỉ định và các file trực tiếp liên quan. Giải pháp/kiến trúc do người giao việc cung cấp; agent chủ yếu thực hiện code.
+- Diff nhỏ; không refactor, thêm dependency, đổi schema/config hoặc thêm tính năng ngoài yêu cầu.
+- Không chạy crawler, `update-hub.ps1`, tác vụ cloud hay thao tác phá hủy dữ liệu nếu chưa được yêu cầu. Không đọc/ghi database thật cho kiểm thử; dùng database tạm trong tests.
+- Chỉ chạy test/cú pháp liên quan trực tiếp. Báo ngắn gọn file sửa, kiểm tra thực sự đã chạy và lỗi còn lại; không tuyên bố kiểm thử chưa chạy.
 
-1. `config/sources.json` được đọc thành `SourceConfig`/`ListingConfig`.
-2. `sync` dùng `PoliteFetcher` tải các listing đã cấu hình, tự nhận diện hoặc ép parser HTML/RSS/sitemap.
-3. Parser tạo `Article`; bài chi tiết được tải giới hạn theo nguồn và làm giàu nội dung khi phù hợp.
-4. `Store` đăng ký nguồn, upsert bài theo fingerprint/hash, liên kết nhiều nguồn/danh mục và lưu revision khi nội dung thực sự đổi.
-5. Dashboard local đọc dữ liệu qua `web_server.py`; trạng thái đã đọc và yêu thích được ghi lại trong SQLite.
-6. `audit`, `repair`, `quality`, `export` tạo báo cáo hoặc thao tác được kiểm soát; `run-all` kết hợp các bước và sao lưu SQLite trước khi chạy.
-
-## Module chính và quy ước
-
-- Giữ tương thích dữ liệu hiện có; migration dùng `CREATE TABLE IF NOT EXISTS`/`ALTER TABLE` có kiểm tra cột, không tái tạo database.
-- Dùng type hints, dataclass và `pathlib`; lỗi fetch/parse được ghi vào báo cáo hoặc trạng thái nguồn thay vì bỏ qua im lặng.
-- Fetch công khai ở mức thấp: tôn trọng `robots.txt`, delay theo host, retry giới hạn và giới hạn kích thước phản hồi; không vượt xác thực/CAPTCHA.
-- Nội dung HTML nguồn phải qua sanitizer trước khi dashboard hiển thị.
-- Thay đổi dữ liệu nguy hiểm phải có backup hoặc chế độ dry-run; ưu tiên bảo toàn bản ghi có trạng thái người dùng.
-- Kiểm thử bằng `python -m unittest discover -s tests` hoặc test liên quan trực tiếp; không chạy crawler thật nếu chưa được yêu cầu.
-
-## Cách chạy/kiểm thử
-
+## Lệnh thường dùng
 ```powershell
-py -3 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-
-python -m hcmus_hub list --limit 30
-python -m hcmus_hub audit --source fit --output data\audit
-python -m hcmus_hub sync --source fit --max-details 3
-python -m hcmus_hub quality --output-dir data\quality
-python -m hcmus_hub web --db data\hcmus_hub.sqlite3
-
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\start-dashboard.ps1
+.\update-hub.ps1  # Đồng bộ thật; chỉ chạy khi được yêu cầu
 python -m unittest discover -s tests
 ```
-
-## Các quyết định kiến trúc đã chốt
-
-- Dự án hiện dùng **Python + SQLite**.
-- Phải bảo toàn database, trạng thái đã đọc, yêu thích và cấu hình nguồn; không xóa/tái tạo/ghi đè các dữ liệu này khi chưa có yêu cầu rõ ràng.
-- Hướng thiết kế đang cân nhắc: **SQLite cục bộ + dữ liệu thông báo dùng chung qua Cloudflare R2 + polling để phát hiện phiên bản mới**.
-- Chưa tự triển khai hướng SQLite/R2/polling nói trên khi chưa có yêu cầu cụ thể.

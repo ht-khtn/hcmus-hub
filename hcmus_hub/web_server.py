@@ -155,6 +155,17 @@ def _api_stats(db: Path, academic_year: str | None = None) -> dict:
         con.close()
 
 
+def _api_version(db: Path) -> dict:
+    con = _connect(db)
+    try:
+        row = con.execute(
+            "SELECT data_revision FROM data_metadata WHERE key='data_revision'"
+        ).fetchone()
+        return {"data_revision": int(row[0]) if row else 0}
+    finally:
+        con.close()
+
+
 def _api_articles(db: Path, params: dict[str, list[str]]) -> dict:
     q = (params.get("q", [""])[0] or "").strip()[:200]
     source = (params.get("source", [""])[0] or "").strip()
@@ -270,6 +281,8 @@ class _HubHandler(BaseHTTPRequestHandler):
         path = parsed.path
         params = parse_qs(parsed.query)
         try:
+            if path == "/api/version":
+                self._json(_api_version(self.db_path)); return
             if path == "/api/stats":
                 self._json(_api_stats(self.db_path, (params.get("academic_year", [""])[0] or "").strip())); return
             if path == "/api/articles":
