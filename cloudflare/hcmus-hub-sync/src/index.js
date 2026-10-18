@@ -71,11 +71,13 @@ async function validateSnapshotJson(bytes, manifest) {
   const payload = JSON.parse(await new Response(stream).text());
   if (!payload || payload.schema_version !== SCHEMA_VERSION ||
       !Array.isArray(payload.sources) || !Array.isArray(payload.articles) ||
-      !Array.isArray(payload.links) ||
       !Number.isInteger(payload.data_revision) || payload.data_revision < 0 ||
       payload.sources.length !== manifest.records.sources ||
       payload.articles.length !== manifest.records.articles ||
-      payload.links.length !== manifest.records.links) {
+      !payload.articles.every((article) =>
+        article && typeof article === "object" && Array.isArray(article.links)) ||
+      payload.articles.reduce((total, article) => total + article.links.length, 0) !==
+        manifest.records.links) {
     throw new Error("Nội dung snapshot không đúng schema hoặc manifest.");
   }
 }

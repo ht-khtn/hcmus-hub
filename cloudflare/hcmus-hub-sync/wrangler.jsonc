@@ -1,5 +1,4 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hcmus-hub-sync",
   "main": "src/index.js",
   "compatibility_date": "2026-10-18",
@@ -7,6 +6,9 @@
   "preview_urls": true,
   "observability": {
     "enabled": false,
+    "logs": {
+      "enabled": false,
+    },
   },
   "r2_buckets": [
     {
