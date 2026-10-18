@@ -4,10 +4,17 @@
   "main": "src/index.js",
   "compatibility_date": "2026-10-18",
   "workers_dev": true,
+  "preview_urls": true,
+  "observability": {
+    "enabled": false,
+  },
   "r2_buckets": [
     {
       "binding": "HUB_BUCKET",
-      "bucket_name": "hcmus-hub-shared-data"
-    }
-  ]
+      "bucket_name": "hcmus-hub-shared-data",
+    },
+  ],
+  "secrets": {
+    "required": ["HUB_WRITE_TOKEN"],
+  },
 }
