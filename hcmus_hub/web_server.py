@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import threading
+import time
 from datetime import date, datetime
 import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -9,6 +11,13 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from .safehtml import rich_html_has_payload, sanitize_rich_html
+from .sharing import (
+    DEFAULT_SHARE_BASE_URL,
+    cloud_snapshot_hash,
+    last_pulled_snapshot_hash,
+    pull_snapshot,
+    remember_pulled_snapshot_hash,
+)
 from .textutils import decode_html_entities
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -352,6 +361,20 @@ def re_match_action(path: str):
     return (int(match.group(1)), match.group(2)) if match else None
 
 
+def _share_poll_loop(db_path: Path, base_url: str) -> None:
+    while True:
+        try:
+            cloud_hash = cloud_snapshot_hash(base_url)
+            if cloud_hash != last_pulled_snapshot_hash(db_path):
+                report = pull_snapshot(db_path, base_url, apply=True)
+                imported_hash = report["snapshot_sha256"]
+                remember_pulled_snapshot_hash(db_path, imported_hash)
+                print(f"[SHARE] Đã nhập snapshot mới: {imported_hash}")
+        except (ValueError, OSError, sqlite3.Error, KeyError, TypeError):
+            pass
+        time.sleep(60)
+
+
 def serve_dashboard(db_path: str | Path, host: str = "127.0.0.1", port: int = 8787):
     database = Path(db_path).expanduser().resolve()
     if not database.exists():
@@ -363,6 +386,12 @@ def serve_dashboard(db_path: str | Path, host: str = "127.0.0.1", port: int = 87
     # Bind to loopback by default to keep student data local. Explicit public bind is not supported by default.
     server = ThreadingHTTPServer((host, port), _HubHandler)
     server.db_path = database  # type: ignore[attr-defined]
+    threading.Thread(
+        target=_share_poll_loop,
+        args=(database, DEFAULT_SHARE_BASE_URL),
+        name="hcmus-hub-share-poll",
+        daemon=True,
+    ).start()
     print(f"HCMUS Hub dashboard: http://{host}:{port}")
     print(f"CSDL: {database}")
     print("Nhấn Ctrl+C để dừng. Mặc định chỉ máy này truy cập được.")

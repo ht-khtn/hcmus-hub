@@ -4,6 +4,7 @@ import gzip
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import tempfile
 import urllib.error
@@ -17,6 +18,7 @@ from .textutils import content_digest, normalize_title
 
 SCHEMA_VERSION = 1
 DEFAULT_SHARE_BASE_URL = "https://hcmus-hub-sync.sanphamsangtao2020.workers.dev"
+SHARE_SYNC_METADATA_TABLE = "share_sync_metadata"
 
 
 class _SnapshotManifestMismatch(ValueError):
@@ -237,6 +239,52 @@ def import_snapshot(db_path: str | Path, snapshot_path: str | Path, manifest_pat
         store.close()
 
 
+def _share_metadata_connection(db_path: str | Path) -> sqlite3.Connection:
+    con = sqlite3.connect(Path(db_path).expanduser().resolve(), timeout=10)
+    con.execute(f"""CREATE TABLE IF NOT EXISTS {SHARE_SYNC_METADATA_TABLE} (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+    )""")
+    con.commit()
+    return con
+
+
+def last_pulled_snapshot_hash(db_path: str | Path) -> str | None:
+    con = _share_metadata_connection(db_path)
+    try:
+        row = con.execute(
+            f"SELECT value FROM {SHARE_SYNC_METADATA_TABLE} WHERE key='snapshot_sha256'"
+        ).fetchone()
+        return str(row[0]) if row else None
+    finally:
+        con.close()
+
+
+def remember_pulled_snapshot_hash(db_path: str | Path, snapshot_hash: str) -> None:
+    con = _share_metadata_connection(db_path)
+    try:
+        con.execute(
+            f"""INSERT INTO {SHARE_SYNC_METADATA_TABLE}(key,value) VALUES('snapshot_sha256',?)
+                ON CONFLICT(key) DO UPDATE SET value=excluded.value""",
+            (snapshot_hash,),
+        )
+        con.commit()
+    finally:
+        con.close()
+
+
+def cloud_snapshot_hash(base_url: str = DEFAULT_SHARE_BASE_URL) -> str:
+    try:
+        manifest = json.loads(_request_bytes(_share_url(base_url, "/api/manifest")).decode("utf-8"))
+        snapshot_hash = manifest["snapshot"]["sha256"]
+    except (UnicodeDecodeError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise ValueError("Manifest từ Worker không hợp lệ.") from exc
+    if (not isinstance(snapshot_hash, str) or
+            not re.fullmatch(r"[0-9a-f]{64}", snapshot_hash, re.IGNORECASE)):
+        raise ValueError("SHA-256 trong manifest Worker không hợp lệ.")
+    return snapshot_hash.lower()
+
+
 def _share_url(base_url: str, path: str) -> str:
     return base_url.rstrip("/") + path
 
@@ -289,7 +337,8 @@ def pull_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL, *
             snapshot_path = directory / filename
             snapshot_path.write_bytes(_request_bytes(_share_url(base_url, "/api/snapshot")))
             try:
-                return import_snapshot(db_path, snapshot_path, manifest_path, apply=apply)
+                report = import_snapshot(db_path, snapshot_path, manifest_path, apply=apply)
+                return {**report, "snapshot_sha256": manifest["snapshot"]["sha256"].lower()}
             except _SnapshotManifestMismatch as exc:
                 last_mismatch = exc
         raise ValueError(f"Manifest và snapshot thay đổi đồng thời sau {max_attempts} lần thử.") from last_mismatch
