@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -19,7 +20,13 @@ from .sync import sync_source
 from .enrich import enrich_weak_articles
 from .quality import build_quality_report, write_quality_report
 from .web_server import serve_dashboard
-from .sharing import export_snapshot, import_snapshot
+from .sharing import (
+    DEFAULT_SHARE_BASE_URL,
+    export_snapshot,
+    import_snapshot,
+    publish_snapshot,
+    pull_snapshot,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CONFIG = ROOT / "config" / "sources.json"
@@ -207,6 +214,19 @@ def _run_share_import(args):
         print("Chế độ xem trước: CSDL chưa bị thay đổi. Chỉ thêm --apply sau khi kiểm tra báo cáo.")
 
 
+def _run_share_pull(args):
+    report = pull_snapshot(args.db, args.base_url, apply=args.apply)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    if not args.apply:
+        print("Chế độ xem trước: CSDL chưa bị thay đổi. Chỉ thêm --apply sau khi kiểm tra báo cáo.")
+
+
+def _run_share_publish(args):
+    token = os.environ.get("HUB_WRITE_TOKEN")
+    report = publish_snapshot(args.db, args.base_url, token)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+
+
 def _run_quality(args):
     report = build_quality_report(Path(args.db).expanduser().resolve())
     json_path, md_path = write_quality_report(report, Path(args.output_dir).expanduser().resolve())
@@ -320,6 +340,17 @@ def build_parser():
     share_import.add_argument("--manifest", default=str(ROOT / "data" / "share-snapshot.manifest.json"))
     share_import.add_argument("--apply", action="store_true", help="Ghi snapshot vào SQLite; mặc định chỉ xem trước")
     share_import.set_defaults(func=_run_share_import)
+
+    share_pull = sub.add_parser("share-pull", help="Tải snapshot từ Worker để kiểm tra hoặc nhập vào SQLite")
+    share_pull.add_argument("--db", default=str(DEFAULT_DB))
+    share_pull.add_argument("--base-url", default=DEFAULT_SHARE_BASE_URL)
+    share_pull.add_argument("--apply", action="store_true", help="Ghi snapshot vào SQLite; mặc định chỉ xem trước")
+    share_pull.set_defaults(func=_run_share_pull)
+
+    share_publish = sub.add_parser("share-publish", help="Xuất và publish snapshot hiện tại lên Worker")
+    share_publish.add_argument("--db", default=str(DEFAULT_DB))
+    share_publish.add_argument("--base-url", default=DEFAULT_SHARE_BASE_URL)
+    share_publish.set_defaults(func=_run_share_publish)
     return parser
 
 

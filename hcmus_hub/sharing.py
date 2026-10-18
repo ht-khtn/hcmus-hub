@@ -6,6 +6,8 @@ import json
 import os
 import sqlite3
 import tempfile
+import urllib.error
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -14,6 +16,11 @@ from .store import Store
 from .textutils import content_digest, normalize_title
 
 SCHEMA_VERSION = 1
+DEFAULT_SHARE_BASE_URL = "https://hcmus-hub-sync.sanphamsangtao2020.workers.dev"
+
+
+class _SnapshotManifestMismatch(ValueError):
+    pass
 
 
 def _atomic_bytes(path: Path, data: bytes) -> None:
@@ -47,7 +54,7 @@ def _read_snapshot(snapshot_path: str | Path, manifest_path: str | Path) -> tupl
     expected = manifest.get("snapshot", {})
     actual_hash = hashlib.sha256(raw).hexdigest()
     if expected.get("filename") != snapshot.name or expected.get("sha256") != actual_hash or expected.get("size") != len(raw):
-        raise ValueError("Manifest không khớp tên file, kích thước hoặc SHA-256 snapshot.")
+        raise _SnapshotManifestMismatch("Manifest không khớp tên file, kích thước hoặc SHA-256 snapshot.")
     try:
         payload = json.loads(gzip.decompress(raw).decode("utf-8"))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -228,3 +235,84 @@ def import_snapshot(db_path: str | Path, snapshot_path: str | Path, manifest_pat
         raise
     finally:
         store.close()
+
+
+def _share_url(base_url: str, path: str) -> str:
+    return base_url.rstrip("/") + path
+
+
+def _request_bytes(url: str, *, method: str = "GET", data: bytes | None = None,
+                   headers: dict[str, str] | None = None) -> bytes:
+    request_headers = {"User-Agent": "HCMUS-Hub/1.0"}
+    request_headers.update(headers or {})
+    request = urllib.request.Request(url, data=data, headers=request_headers, method=method)
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            return response.read()
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace").strip()
+        raise ValueError(f"Worker trả HTTP {exc.code}: {detail or 'không có chi tiết.'}") from exc
+    except urllib.error.URLError as exc:
+        raise ValueError(f"Không thể kết nối Worker: {exc.reason}") from exc
+
+
+def _multipart_form(snapshot: bytes, snapshot_name: str, manifest: bytes, manifest_name: str) -> tuple[bytes, str]:
+    boundary = "----HcmusHubShareBoundary"
+    parts = [
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"snapshot\"; filename=\"{snapshot_name}\"\r\n"
+        "Content-Type: application/gzip\r\n\r\n".encode("utf-8") + snapshot + b"\r\n",
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"manifest\"; filename=\"{manifest_name}\"\r\n"
+        "Content-Type: application/json\r\n\r\n".encode("utf-8") + manifest + b"\r\n",
+        f"--{boundary}--\r\n".encode("utf-8"),
+    ]
+    return b"".join(parts), f"multipart/form-data; boundary={boundary}"
+
+
+def pull_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL, *, apply: bool = False,
+                  max_attempts: int = 3) -> dict[str, Any]:
+    with tempfile.TemporaryDirectory(prefix="hcmus-hub-share-pull-") as temp_dir:
+        directory = Path(temp_dir)
+        manifest_path = directory / "manifest.json"
+        snapshot_path = directory / "snapshot.json.gz"
+        last_mismatch: _SnapshotManifestMismatch | None = None
+        for _ in range(max_attempts):
+            manifest_bytes = _request_bytes(_share_url(base_url, "/api/manifest"))
+            try:
+                manifest = json.loads(manifest_bytes.decode("utf-8"))
+                filename = manifest["snapshot"]["filename"]
+                if (not isinstance(filename, str) or not filename or
+                        Path(filename).name != filename):
+                    raise ValueError("Manifest snapshot filename không hợp lệ.")
+            except (UnicodeDecodeError, json.JSONDecodeError, KeyError, TypeError) as exc:
+                raise ValueError("Manifest từ Worker không hợp lệ.") from exc
+            manifest_path.write_bytes(manifest_bytes)
+            snapshot_path = directory / filename
+            snapshot_path.write_bytes(_request_bytes(_share_url(base_url, "/api/snapshot")))
+            try:
+                return import_snapshot(db_path, snapshot_path, manifest_path, apply=apply)
+            except _SnapshotManifestMismatch as exc:
+                last_mismatch = exc
+        raise ValueError(f"Manifest và snapshot thay đổi đồng thời sau {max_attempts} lần thử.") from last_mismatch
+
+
+def publish_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL, token: str | None = None) -> dict[str, Any]:
+    if not token:
+        raise ValueError("Thiếu HUB_WRITE_TOKEN trong biến môi trường.")
+    with tempfile.TemporaryDirectory(prefix="hcmus-hub-share-publish-") as temp_dir:
+        directory = Path(temp_dir)
+        snapshot_path = directory / "snapshot.json.gz"
+        manifest_path = directory / "manifest.json"
+        export_snapshot(db_path, snapshot_path, manifest_path)
+        body, content_type = _multipart_form(
+            snapshot_path.read_bytes(), snapshot_path.name, manifest_path.read_bytes(), manifest_path.name
+        )
+        response = _request_bytes(
+            _share_url(base_url, "/api/publish"),
+            method="POST",
+            data=body,
+            headers={"Authorization": f"Bearer {token}", "Content-Type": content_type},
+        )
+        try:
+            return json.loads(response.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ValueError("Worker trả về JSON không hợp lệ.") from exc
