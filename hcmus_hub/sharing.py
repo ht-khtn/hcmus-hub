@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import gzip
 import hashlib
@@ -44,6 +44,15 @@ def _atomic_bytes(path: Path, data: bytes) -> None:
 
 def _json_bytes(payload: dict[str, Any]) -> bytes:
     return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def _shared_fingerprint(payload: dict[str, Any]) -> str:
+    shared = {
+        "schema_version": payload["schema_version"],
+        "sources": payload["sources"],
+        "articles": payload["articles"],
+    }
+    return hashlib.sha256(_json_bytes(shared)).hexdigest()
 
 
 def _read_snapshot(snapshot_path: str | Path, manifest_path: str | Path) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -160,14 +169,16 @@ def _merge_article(con: sqlite3.Connection, incoming: dict[str, Any], article_id
     if len(current["content_html"] or "") > len(content_html):
         content_html = current["content_html"]
     summary = incoming.get("summary") or current["summary"]
+    if len(current["summary"] or "") > len(summary):
+        summary = current["summary"]
     title = current["title"] if len(current["title"] or "") > len(incoming.get("title") or "") else incoming["title"]
-    published_at = incoming.get("published_at") or current["published_at"]
-    published_source = incoming.get("published_at_source") or current["published_at_source"]
+    published_at = current["published_at"] or incoming.get("published_at")
+    published_source = current["published_at_source"] or incoming.get("published_at_source")
     digest = content_digest(title, summary, content, attachments, content_html or None)
     con.execute("""UPDATE articles SET fingerprint=?, normalized_title=?, title=?, published_at=?,
         published_at_source=?, category=?, summary=?, content=?, content_html=?, attachments_json=?,
         content_hash=? WHERE id=?""", (
-        incoming["fingerprint"], normalize_title(title), title, published_at, published_source,
+        current["fingerprint"] or incoming["fingerprint"], normalize_title(title), title, published_at, published_source,
         current["category"], summary, content, content_html, json.dumps(attachments, ensure_ascii=False),
         digest, article_id,
     ))
@@ -304,6 +315,18 @@ def _request_bytes(url: str, *, method: str = "GET", data: bytes | None = None,
         raise ValueError(f"Không thể kết nối Worker: {exc.reason}") from exc
 
 
+def _request_with_headers(url: str) -> tuple[bytes, dict[str, str]]:
+    request = urllib.request.Request(url, headers={"User-Agent": "HCMUS-Hub/1.0"}, method="GET")
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            return response.read(), {key.lower(): value for key, value in response.headers.items()}
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace").strip()
+        raise ValueError(f"Worker trả HTTP {exc.code}: {detail or 'không có chi tiết.'}") from exc
+    except urllib.error.URLError as exc:
+        raise ValueError(f"Không thể kết nối Worker: {exc.reason}") from exc
+
+
 def _multipart_form(snapshot: bytes, snapshot_name: str, manifest: bytes, manifest_name: str) -> tuple[bytes, str]:
     boundary = "----HcmusHubShareBoundary"
     parts = [
@@ -344,24 +367,45 @@ def pull_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL, *
         raise ValueError(f"Manifest và snapshot thay đổi đồng thời sau {max_attempts} lần thử.") from last_mismatch
 
 
-def publish_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL, token: str | None = None) -> dict[str, Any]:
+def publish_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL,
+                     token: str | None = None, max_attempts: int = 3) -> dict[str, Any]:
     if not token:
         raise ValueError("Thiếu HUB_WRITE_TOKEN trong biến môi trường.")
     with tempfile.TemporaryDirectory(prefix="hcmus-hub-share-publish-") as temp_dir:
         directory = Path(temp_dir)
         snapshot_path = directory / "snapshot.json.gz"
         manifest_path = directory / "manifest.json"
-        export_snapshot(db_path, snapshot_path, manifest_path)
-        body, content_type = _multipart_form(
-            snapshot_path.read_bytes(), snapshot_path.name, manifest_path.read_bytes(), manifest_path.name
-        )
-        response = _request_bytes(
-            _share_url(base_url, "/api/publish"),
-            method="POST",
-            data=body,
-            headers={"Authorization": f"Bearer {token}", "Content-Type": content_type},
-        )
-        try:
-            return json.loads(response.decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            raise ValueError("Worker trả về JSON không hợp lệ.") from exc
+        for attempt in range(max_attempts):
+            try:
+                manifest_bytes, response_headers = _request_with_headers(_share_url(base_url, "/api/manifest"))
+                manifest = json.loads(manifest_bytes.decode("utf-8"))
+                filename = manifest["snapshot"]["filename"]
+                if not isinstance(filename, str) or Path(filename).name != filename:
+                    raise ValueError("Manifest snapshot filename không hợp lệ.")
+                cloud_snapshot = directory / filename
+                cloud_snapshot.write_bytes(_request_bytes(_share_url(base_url, "/api/snapshot")))
+                cloud_manifest = directory / "cloud-manifest.json"
+                cloud_manifest.write_bytes(manifest_bytes)
+                cloud_payload, _ = _read_snapshot(cloud_snapshot, cloud_manifest)
+                import_snapshot(db_path, cloud_snapshot, cloud_manifest, apply=True)
+                baseline_etag = response_headers.get("etag")
+                cloud_fingerprint = _shared_fingerprint(cloud_payload)
+            except ValueError as exc:
+                if "HTTP 404" not in str(exc):
+                    raise
+                baseline_etag = None
+                cloud_fingerprint = None
+            export_snapshot(db_path, snapshot_path, manifest_path)
+            local_payload, _ = _read_snapshot(snapshot_path, manifest_path)
+            if baseline_etag and _shared_fingerprint(local_payload) == cloud_fingerprint:
+                return {"ok": True, "published": False, "reason": "shared_data_unchanged"}
+            body, content_type = _multipart_form(snapshot_path.read_bytes(), snapshot_path.name, manifest_path.read_bytes(), manifest_path.name)
+            headers = {"Authorization": f"Bearer {token}", "Content-Type": content_type}
+            headers["If-Match" if baseline_etag else "If-None-Match"] = baseline_etag or "*"
+            try:
+                response = _request_bytes(_share_url(base_url, "/api/publish"), method="POST", data=body, headers=headers)
+                return {**json.loads(response.decode("utf-8")), "published": True}
+            except ValueError as exc:
+                if "HTTP 409" not in str(exc) or attempt + 1 >= max_attempts:
+                    raise ValueError(f"Xung đột publish chưa giải quyết được sau {max_attempts} lần thử.") from exc
+        raise ValueError(f"Xung đột publish chưa giải quyết được sau {max_attempts} lần thử.")

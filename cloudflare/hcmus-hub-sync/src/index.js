@@ -14,8 +14,8 @@ function corsHeaders(request) {
   const headers = { "Vary": "Origin" };
   if (origin && ALLOWED_ORIGINS.has(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
-    headers["Access-Control-Allow-Methods"] = "GET, OPTIONS";
-    headers["Access-Control-Allow-Headers"] = "Content-Type";
+    headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+    headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, If-Match, If-None-Match";
   }
   return headers;
 }
@@ -90,6 +90,14 @@ async function readManifest(env) {
   return manifest;
 }
 
+async function readManifestObject(env) {
+  const object = await env.HUB_BUCKET.get(MANIFEST_KEY);
+  if (!object) throw new Error("Chưa có manifest.");
+  const manifest = await object.json();
+  validateManifest(manifest);
+  return { manifest, etag: object.httpEtag };
+}
+
 function authorized(request, env) {
   const value = request.headers.get("Authorization") || "";
   return value.startsWith("Bearer ") &&
@@ -141,9 +149,20 @@ async function publish(request, env) {
     ...manifest,
     snapshot: { ...manifest.snapshot, filename: `${digest}.json.gz` },
   };
-  await env.HUB_BUCKET.put(MANIFEST_KEY, JSON.stringify(storedManifest), {
+  const current = await env.HUB_BUCKET.get(MANIFEST_KEY);
+  const ifMatch = request.headers.get("If-Match");
+  const ifNoneMatch = request.headers.get("If-None-Match");
+  if (current && (!ifMatch || ifMatch !== current.httpEtag)) {
+    return errorResponse(request, 409, "Manifest đã thay đổi; cần pull và merge lại.");
+  }
+  if (!current && ifNoneMatch !== "*") {
+    return errorResponse(request, 409, "Manifest nền không còn tồn tại; cần pull lại.");
+  }
+  const written = await env.HUB_BUCKET.put(MANIFEST_KEY, JSON.stringify(storedManifest), {
+    onlyIf: current ? { etagMatches: [current.httpEtag] } : { etagDoesNotMatch: ["*"] },
     httpMetadata: { contentType: "application/json; charset=utf-8" },
   });
+  if (!written) return errorResponse(request, 409, "Manifest đã thay đổi; cần pull và merge lại.");
   return jsonResponse(request, { ok: true, manifest: storedManifest });
 }
 
@@ -158,7 +177,10 @@ export default {
     }
     if (url.pathname === "/api/manifest" && request.method === "GET") {
       try {
-        return jsonResponse(request, await readManifest(env));
+        const result = await readManifestObject(env);
+        const response = jsonResponse(request, result.manifest);
+        response.headers.set("ETag", result.etag);
+        return response;
       } catch (error) {
         return errorResponse(request, 404, error.message);
       }
