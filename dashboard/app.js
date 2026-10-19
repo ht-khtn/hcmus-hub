@@ -63,7 +63,7 @@
     $('#website-check-status').textContent = statusText;
     const report = payload.report;
     $('#website-check-summary').textContent = report
-      ? `· ${report.sources_checked} nguồn, ${report.articles_discovered} bài phát hiện, ${report.upsert_events} lượt cập nhật`
+      ? `· ${report.sources_checked} nguồn, ${report.changed_sources} nguồn có thay đổi, ${report.unchanged_sources} không đổi, ${report.listings_not_modified} URL không đổi`
       : payload.error ? `· ${payload.error}` : '';
     const failed = (report?.failed_sources || []);
     $('#website-check-errors').innerHTML = failed.length

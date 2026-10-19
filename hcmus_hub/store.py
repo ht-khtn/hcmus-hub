@@ -72,6 +72,14 @@ CREATE TABLE IF NOT EXISTS data_metadata (
   key TEXT PRIMARY KEY,
   data_revision INTEGER NOT NULL DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS http_validators (
+  source_id TEXT NOT NULL REFERENCES sources(id) ON DELETE CASCADE,
+  url TEXT NOT NULL,
+  etag TEXT,
+  last_modified TEXT,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY(source_id, url)
+);
 """
 
 
@@ -175,6 +183,37 @@ class Store:
         self.conn.execute("UPDATE sources SET last_checked_at=?, last_success_at=CASE WHEN ? IS NULL THEN ? ELSE last_success_at END, last_error=? WHERE id=?",
                           (now, error, now, error, source_id))
         self.conn.commit()
+
+    def http_validators(self, source_id: str, url: str) -> dict[str, str]:
+        row = self.conn.execute(
+            "SELECT etag,last_modified FROM http_validators WHERE source_id=? AND url=?",
+            (source_id, url),
+        ).fetchone()
+        if not row:
+            return {}
+        return {key: row[key] for key in ("etag", "last_modified") if row[key]}
+
+    def save_http_validators(self, source_id: str, url: str, headers: dict[str, str]):
+        etag = headers.get("etag")
+        last_modified = headers.get("last-modified")
+        if not etag and not last_modified:
+            return
+        self.conn.execute(
+            """INSERT INTO http_validators(source_id,url,etag,last_modified,updated_at)
+               VALUES(?,?,?,?,?)
+               ON CONFLICT(source_id,url) DO UPDATE SET
+                 etag=excluded.etag,
+                 last_modified=excluded.last_modified,
+                 updated_at=excluded.updated_at""",
+            (source_id, url, etag, last_modified, utc_now_iso()),
+        )
+        self.conn.commit()
+
+    def has_source_url(self, source_id: str, source_url: str) -> bool:
+        return self.conn.execute(
+            "SELECT 1 FROM article_sources WHERE source_id=? AND source_url=? LIMIT 1",
+            (source_id, source_url),
+        ).fetchone() is not None
 
     def upsert_article(self, article: Article) -> str:
         """Returns new, updated, linked_duplicate, unchanged, or updated_content."""

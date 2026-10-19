@@ -61,13 +61,15 @@ def _looks_like_sitemap(result) -> bool:
 
 
 async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store,
-                      max_details: int | None = None, max_items_per_listing: int = 30) -> dict:
+                      max_details: int | None = None, max_items_per_listing: int = 30,
+                      full_rescan: bool = False) -> dict:
     store.register_source(source)
     store.source_check_started(source.id)
     seen_urls: set[str] = set()
     discovered: list[Article] = []
     listing_errors: list[str] = []
     successful_listings = 0
+    listing_not_modified = 0
     try:
         for listing in source.listings:
             url = listing.url
@@ -77,9 +79,20 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
                     break
                 visited_pages.add(url)
                 try:
-                    response = await fetcher.get(url)
+                    request_url = normalize_url(url)
+                    validators = {} if full_rescan else store.http_validators(source.id, request_url)
+                    conditional_headers = {}
+                    if validators.get("etag"):
+                        conditional_headers["If-None-Match"] = validators["etag"]
+                    if validators.get("last_modified"):
+                        conditional_headers["If-Modified-Since"] = validators["last_modified"]
+                    response = await fetcher.get(url, headers=conditional_headers or None)
                 except FetchError as exc:
                     listing_errors.append(f"{url}: {exc}")
+                    break
+                store.save_http_validators(source.id, request_url, response.headers)
+                if response.status_code == 304:
+                    listing_not_modified += 1
                     break
                 successful_listings += 1
                 mode = (listing.mode or "auto").lower()
@@ -97,6 +110,7 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
                         link_patterns=["/beta/tin-tuc/d/", "/tin-tuc/d/", "/news/"],
                     )
                 for article in page_articles:
+                    article.source_url = normalize_url(article.source_url)
                     if article.source_url not in seen_urls:
                         discovered.append(article)
                         seen_urls.add(article.source_url)
@@ -112,8 +126,13 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
         outcome_keys = ("new", "updated_content", "linked_duplicate", "unchanged")
         listing_outcomes: dict[str, int] = {key: 0 for key in outcome_keys}
         detail_outcomes: dict[str, int] = {key: 0 for key in outcome_keys}
+        new_article_urls: set[str] = set()
         for article in discovered:
+            article.source_url = normalize_url(article.source_url)
+            is_existing = store.has_source_url(source.id, article.source_url)
             listing_outcomes[store.upsert_article(article)] += 1
+            if not is_existing:
+                new_article_urls.add(article.source_url)
 
         details_limit = source.max_details_per_sync if max_details is None else max_details
         detail_count = 0
@@ -123,6 +142,7 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
         detail_body_chars = 0
         detail_empty_body = 0
         detail_http_fetched = 0
+        detail_not_modified = 0
         detail_fetch_errors = 0
         detail_parse_errors = 0
         detail_body_selectors: dict[str, int] = {}
@@ -135,12 +155,26 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
         for article in discovered:
             if details_attempted >= max(0, details_limit):
                 break
+            if not full_rescan and article.source_url not in new_article_urls:
+                continue
             # Do not crawl arbitrary third-party pages linked from a feed/listing.
             if urlsplit(article.source_url).netloc.lower() != source_host:
                 continue
             details_attempted += 1
             try:
-                detail_response = await fetcher.get(article.source_url)
+                validators = {} if full_rescan else store.http_validators(source.id, article.source_url)
+                conditional_headers = {}
+                if validators.get("etag"):
+                    conditional_headers["If-None-Match"] = validators["etag"]
+                if validators.get("last_modified"):
+                    conditional_headers["If-Modified-Since"] = validators["last_modified"]
+                detail_response = await fetcher.get(
+                    article.source_url, headers=conditional_headers or None
+                )
+                store.save_http_validators(source.id, article.source_url, detail_response.headers)
+                if detail_response.status_code == 304:
+                    detail_not_modified += 1
+                    continue
                 detail_http_fetched += 1
                 enriched = parse_detail_html(detail_response.text, article)
                 detail_outcomes[store.upsert_article(enriched)] += 1
@@ -185,14 +219,21 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
             all_errors.append("Đọc được trang danh mục nhưng không trích xuất được bài nào; cần kiểm tra selector/JavaScript và báo cáo audit.")
         store.source_check_finished(source.id, "; ".join(all_errors[:3]) if all_errors else None)
         outcomes = {key: listing_outcomes[key] + detail_outcomes[key] for key in outcome_keys}
+        changed_events = outcomes["new"] + outcomes["updated_content"] + outcomes["linked_duplicate"]
         return {
             "source_id": source.id,
             "source_name": source.name,
             "listings_succeeded": successful_listings,
+            "listings_not_modified": listing_not_modified,
             "articles_discovered": len(discovered),
+            "new_articles": len(new_article_urls),
+            "incremental": not full_rescan,
+            "changed": changed_events,
+            "no_changes": changed_events == 0,
             "details_attempted": details_attempted,
             "details_fetched": detail_count,
             "details_http_fetched": detail_http_fetched,
+            "details_not_modified": detail_not_modified,
             "details_fetch_errors": detail_fetch_errors,
             "details_parse_errors": detail_parse_errors,
             "details_body_selectors": detail_body_selectors,

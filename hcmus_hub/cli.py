@@ -115,7 +115,8 @@ async def _run_sync(args):
                 print(f"[SYNC] {source.id}: {source.name}")
                 report = await sync_source(source, fetcher, store,
                                            max_details=args.max_details,
-                                           max_items_per_listing=args.max_items_per_listing)
+                                           max_items_per_listing=args.max_items_per_listing,
+                                           full_rescan=args.full_rescan)
                 print(json.dumps(report, ensure_ascii=False, indent=2))
             if fetcher.warnings:
                 print("CẢNH BÁO FETCHER:")
@@ -276,6 +277,8 @@ def build_parser():
     sync.add_argument("--max-details", type=int, default=None, help="Giới hạn số bài chi tiết tải cho mỗi nguồn.")
     sync.add_argument("--max-items-per-listing", type=int, default=1000)
     sync.add_argument("--delay", type=float, default=None)
+    sync.add_argument("--full-rescan", action="store_true",
+                      help="Tải lại trang chi tiết của cả bài đã có; mặc định chỉ tải bài mới.")
     sync.set_defaults(func=lambda args: asyncio.run(_run_sync(args)))
 
     listing = sub.add_parser("list", help="Xem thông báo đã lưu")

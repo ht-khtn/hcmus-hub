@@ -86,7 +86,8 @@ class PoliteFetcher:
             self._robots[origin] = None
         return self._robots[origin]
 
-    async def get(self, url: str, *, check_robots: bool = True, allow_http_errors: bool = False) -> FetchResult:
+    async def get(self, url: str, *, check_robots: bool = True, allow_http_errors: bool = False,
+                  headers: dict[str, str] | None = None) -> FetchResult:
         if self.respect_robots and check_robots:
             robots = await self._get_robots(url)
             if robots and not robots.can_fetch(self.user_agent, url):
@@ -95,7 +96,7 @@ class PoliteFetcher:
         for attempt in range(3):
             try:
                 await self._throttle(url)
-                async with self._client.stream("GET", url) as response:
+                async with self._client.stream("GET", url, headers=headers) as response:
                     chunks: list[bytes] = []
                     total = 0
                     async for chunk in response.aiter_bytes():
