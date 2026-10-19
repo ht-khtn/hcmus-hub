@@ -6,11 +6,11 @@ HCMUS Hub là dự án cá nhân nhằm tổng hợp và theo dõi thông báo c
 
 ## Tải xuống
 
-**HCMUS Hub v0.9.0-alpha** — _Bản alpha thử nghiệm_
+**HCMUS Hub v0.9.1-alpha** — _Bản alpha thử nghiệm_
 
 | Nền tảng    | Tải xuống                                                                                                          |
 | :---------- | :----------------------------------------------------------------------------------------------------------------- |
-| Windows x64 | [**HCMUS-Hub-Setup.exe**](https://github.com/ht-khtn/hcmus-hub/releases/download/v0.9.0-alpha/HCMUS-Hub-Setup.exe) |
+| Windows x64 | [**HCMUS-Hub-Setup.exe**](https://github.com/ht-khtn/hcmus-hub/releases/download/v0.9.1-alpha/HCMUS-Hub-Setup.exe) |
 | Android     | <sub><em>Đang phát triển</em></sub>                                                                                |
 
 > _Lưu ý: Đây là bản alpha, một số chức năng có thể chưa ổn định. Hãy sao lưu dữ liệu trước khi nâng cấp._
