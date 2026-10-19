@@ -96,7 +96,8 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
                     break
                 successful_listings += 1
                 mode = (listing.mode or "auto").lower()
-                if mode == "sitemap" or (mode == "auto" and _looks_like_sitemap(response)):
+                is_sitemap = mode == "sitemap" or (mode == "auto" and _looks_like_sitemap(response))
+                if is_sitemap:
                     page_articles = parse_sitemap(
                         response.text, response.url, source.id, source.name,
                         listing.category, listing.link_patterns or None,
@@ -114,7 +115,7 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
                     if article.source_url not in seen_urls:
                         discovered.append(article)
                         seen_urls.add(article.source_url)
-                    if len([a for a in discovered if a.category == listing.category]) >= max_items_per_listing:
+                    if not is_sitemap and len([a for a in discovered if a.category == listing.category]) >= max_items_per_listing:
                         break
                 if page_no >= source.max_pages:
                     break
@@ -226,10 +227,13 @@ async def sync_source(source: SourceConfig, fetcher: PoliteFetcher, store: Store
             "listings_succeeded": successful_listings,
             "listings_not_modified": listing_not_modified,
             "articles_discovered": len(discovered),
-            "new_articles": len(new_article_urls),
             "incremental": not full_rescan,
             "changed": changed_events,
             "no_changes": changed_events == 0,
+            "new_articles": outcomes["new"],
+            "updated_content": outcomes["updated_content"],
+            "linked_duplicate": outcomes["linked_duplicate"],
+            "unchanged": outcomes["unchanged"],
             "details_attempted": details_attempted,
             "details_fetched": detail_count,
             "details_http_fetched": detail_http_fetched,
