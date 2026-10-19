@@ -1,30 +1,32 @@
-# HCMUS Hub — bộ thu thập thông báo (prototype v0.2)
+# HCMUS Hub
 
-Đây là nền móng cho website thông tin cá nhân HCMUS Hub: thu thập bài công khai từ nhiều nguồn, chuẩn hóa dữ liệu, phát hiện bài trùng, lưu lịch sử cập nhật và xuất dữ liệu để xây dashboard ở giai đoạn tiếp theo.
+HCMUS Hub là dự án cá nhân nhằm tổng hợp và theo dõi thông báo công khai từ nhiều nguồn liên quan đến Trường Đại học Khoa học Tự nhiên, ĐHQG-HCM. Dự án thu thập và chuẩn hóa dữ liệu, phát hiện bài trùng, lưu lịch sử thay đổi và cung cấp dashboard web chạy cục bộ.
 
-**Phạm vi hiện tại:** Giai đoạn A (kiểm kê nguồn + audit RSS/sitemap/API/HTML chạy tại máy người dùng) và Giai đoạn B (bộ thu thập + SQLite + CLI). v0.2 dùng các RSS đã được audit xác nhận, bổ sung parser sitemap cho CTSV và mở rộng audit để đếm URL feed/sitemap. Chưa có giao diện web, chưa có thông báo đẩy và chưa tích hợp portal cần đăng nhập.
+> **Trạng thái:** alpha. Các chức năng và cấu trúc dữ liệu vẫn có thể thay đổi; hãy sao lưu dữ liệu trước khi nâng cấp hoặc chuyển sang bản đóng gói.
 
-## 1. Yêu cầu
+## Tính năng
 
-- Python 3.11 trở lên (khuyến nghị).
-- Internet từ máy chạy chương trình.
-- Các package trong `requirements.txt`.
+- Thu thập thông báo từ các nguồn công khai đã cấu hình, sử dụng RSS/Atom, sitemap hoặc HTML tùy từng nguồn.
+- Kiểm tra nguồn và hỗ trợ audit endpoint để xem HTTP status, loại phản hồi và một số URL mẫu.
+- Lưu dữ liệu trong SQLite; liên kết các URL nguồn trỏ tới cùng một bài và lưu revision khi phát hiện nội dung thay đổi.
+- Đồng bộ tăng dần để hạn chế tải lại chi tiết bài đã biết.
+- Dashboard web cục bộ để xem, lọc và tìm thông báo; quản lý trạng thái đã đọc/yêu thích.
+- Kiểm tra website chạy nền, có thống kê bài mới, nội dung cập nhật, liên kết trùng và các mục không thay đổi.
+- Hỗ trợ xuất/nhập snapshot và đồng bộ dữ liệu dùng chung thông qua Cloudflare Worker và R2 khi được cấu hình.
+- Có script khởi chạy trên Windows và cấu hình đóng gói bằng PyInstaller + Inno Setup.
 
-## 2. Cài đặt trên Kali Linux / Ubuntu
+## Yêu cầu
 
-Mở terminal trong thư mục `hcmus-hub-v0.1`:
+- Python 3.11 trở lên được khuyến nghị cho môi trường phát triển.
+- Kết nối Internet để audit/đồng bộ các website và sử dụng chức năng chia sẻ dữ liệu.
+- Các package được khai báo trong `requirements.txt`.
+- Đối với việc tạo bộ cài Windows: PyInstaller và Inno Setup có `ISCC.exe`.
 
-```bash
-python3 --version
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
+## Chạy trên Windows
 
-Nếu Kali báo thiếu `venv`, cài gói hệ thống bằng `sudo apt install python3-venv` rồi tạo môi trường ảo lại.
+Mở PowerShell tại thư mục repository.
 
-## 3. Cài đặt trên Windows PowerShell
+### 1. Tạo môi trường Python
 
 ```powershell
 py -3 -m venv .venv
@@ -33,89 +35,115 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-## 3.1. Đóng gói bộ cài Windows
+Nếu PowerShell chặn việc kích hoạt môi trường ảo, có thể dùng `python -m pip ...` với đường dẫn Python trong môi trường `.venv`, hoặc điều chỉnh Execution Policy theo chính sách máy đang sử dụng.
 
-Bản đóng gói dùng PyInstaller `onedir` và Inno Setup. Bộ cài **không chứa**
-SQLite, `.env`, token, thư mục `.git`, `build`, `dist` cũ, log hoặc dữ liệu
-riêng tư. Khi chạy bản cài đặt, dữ liệu được lưu ổn định tại:
+### 2. Khởi chạy dashboard
 
-`%LOCALAPPDATA%\HCMUS Hub\data\hcmus_hub.sqlite3`
-
-Nếu đường dẫn đích chưa có CSDL, launcher chỉ sao chép một lần từ
-`data\hcmus_hub.sqlite3` trong thư mục hiện tại (hỗ trợ chuyển từ bản phát
-triển); không ghi đè hoặc sửa CSDL nguồn. `.env` tùy chọn đặt tại
-`%LOCALAPPDATA%\HCMUS Hub\.env`.
-
-Yêu cầu trên máy build: Python 3.11+, PyInstaller và Inno Setup (có
-`ISCC.exe`). Cài PyInstaller trong môi trường Python của dự án nếu cần:
+Khuyến nghị dùng file khởi chạy tại thư mục gốc repository:
 
 ```powershell
-python -m pip install pyinstaller
+.\Open-HCMUS-Hub.bat
 ```
 
-Sau khi cài Inno Setup, chạy từ thư mục gốc repository:
+Launcher gọi script PowerShell hiện có, chờ dashboard sẵn sàng rồi mở trình duyệt tới:
+
+`http://127.0.0.1:8787/`
+
+Giữ cửa sổ terminal chạy server trong thời gian sử dụng. Khi muốn dừng server, chuyển tới cửa sổ đó và nhấn `Ctrl+C` nếu được hỗ trợ bởi tiến trình đang chạy.
+
+> Nếu chưa có `Open-HCMUS-Hub.bat` trong bản checkout, xem `hcmus-hub.ps1` và `start-dashboard.ps1` để khởi chạy theo cấu hình của repository hiện tại.
+
+## Đóng gói bộ cài Windows
+
+Bản đóng gói sử dụng PyInstaller ở chế độ `onedir` và Inno Setup để tạo một file bộ cài.
+
+### Yêu cầu trên máy build
+
+1. Cài Python 3.11 trở lên.
+2. Cài dependencies của dự án và PyInstaller:
+
+   ```powershell
+   python -m pip install -r requirements.txt
+   python -m pip install pyinstaller
+   ```
+
+3. Cài [Inno Setup](https://jrsoftware.org/isdl.php). Script build tìm `ISCC.exe` trong `PATH` và các vị trí cài đặt phổ biến, bao gồm thư mục cài đặt theo user.
+
+### Tạo bộ cài
+
+Chạy từ thư mục gốc repository:
 
 ```powershell
 .\packaging\build_windows.ps1
 ```
 
-Script tạo thư mục tạm `build\windows`, bản chạy `dist\windows` và file cài
-đặt `dist\installer\HCMUS-Hub-Setup.exe`. Chỉ khi lệnh hoàn tất thành công
-mới có thể coi file Setup đã được tạo.
+Nếu build hoàn tất thành công, file bộ cài dự kiến nằm tại:
 
-## 4. Bước đầu tiên — audit thật các nguồn từ máy của bạn
+```text
+dist\installer\HCMUS-Hub-Setup.exe
+```
 
-Báo cáo audit của mèo ngày 15/10/2026 đã xác nhận một số endpoint RSS/API/sitemap hoạt động. Xem `docs/AUDIT_RESULTS_2026-10-15.md`. v0.2 mở rộng audit để đếm mục feed, URL trong sitemap và hiển thị một số URL mẫu. Chạy audit lại khi muốn xác nhận sitemap CTSV có bao nhiêu URL bài viết, vì bản audit cũ chỉ ghi `root=urlset`.
+Script sử dụng các thư mục build sinh tự động `build\windows` và `dist\windows`; các thư mục này có thể bị xóa và tạo lại trong quá trình build. Không lưu dữ liệu cá nhân trong đó.
 
-Chỉ thử một nguồn trước:
+**Lưu ý:** việc có cấu hình đóng gói trong repository không có nghĩa bộ cài đã được kiểm thử trên mọi máy Windows. Trước khi phát hành bản mới, hãy cài thử bộ cài và xác nhận dashboard khởi động được, database được giữ nguyên và cấu hình đồng bộ không bị lộ.
 
-```bash
+### Vị trí lưu dữ liệu của bản cài
+
+Theo cấu hình đóng gói hiện tại, dữ liệu của ứng dụng cài đặt được lưu ngoài thư mục chương trình để không bị xóa khi cập nhật/gỡ ứng dụng:
+
+- SQLite: `%LOCALAPPDATA%\HCMUS Hub\data\hcmus_hub.sqlite3`
+- Cấu hình tùy chọn: `%LOCALAPPDATA%\HCMUS Hub\.env`
+
+Khi đường dẫn database đích chưa tồn tại, launcher có thể sao chép database từ `data\hcmus_hub.sqlite3` của bản phát triển để hỗ trợ chuyển đổi lần đầu. Không tự xóa hoặc ghi đè database cũ. Hãy sao lưu database trước khi cài đặt hoặc chuyển đổi.
+
+## Audit nguồn thông tin
+
+Audit giúp kiểm tra các endpoint công khai được cấu hình; đây là phép dò có giới hạn, không bảo đảm tìm thấy mọi API hoặc feed của website.
+
+Audit một nguồn:
+
+```powershell
 python -m hcmus_hub audit --source fit --output data/audit
 ```
 
-Sau đó thử các nguồn còn lại:
+Audit các nguồn đã cấu hình:
 
-```bash
+```powershell
 python -m hcmus_hub audit --output data/audit
 ```
 
-Đầu ra:
+Đầu ra thường gồm:
 
-- `data/audit/source-audit.md`: bảng dễ đọc về HTTP status, loại phản hồi và hướng đề xuất.
-- `data/audit/source-audit.json`: dữ liệu audit để so sánh / tự động xử lý.
+- `data/audit/source-audit.md`: báo cáo dễ đọc.
+- `data/audit/source-audit.json`: dữ liệu audit để so sánh hoặc xử lý tiếp.
 
-Các URL audit gồm `robots.txt`, sitemap phổ biến, feed RSS/Atom, endpoint WordPress REST API phổ biến và các URL danh mục đã cấu hình. Audit **không** tìm thấy mọi endpoint có thể tồn tại; nó là một đợt dò kỹ thuật có giới hạn.
+Xem thêm kết quả audit đã lưu tại `docs/AUDIT_RESULTS_2026-10-15.md`, nếu file này có trong checkout hiện tại. Nên audit lại trước khi dựa vào trạng thái nguồn cũ vì cấu trúc website có thể thay đổi.
 
-## 5. Bước thứ hai — đồng bộ thử FIT
+## Đồng bộ dữ liệu
 
-Bắt đầu nhẹ để kiểm tra chất lượng dữ liệu:
+Thử đồng bộ một nguồn với giới hạn nhỏ:
 
-```bash
+```powershell
 python -m hcmus_hub sync --source fit --max-details 3 --max-items-per-listing 10 --delay 1.0
 ```
 
-Nếu kết quả hợp lý, đồng bộ những nguồn công khai đã bật:
+Đồng bộ nhiều nguồn công khai đã cấu hình:
 
-```bash
+```powershell
 python -m hcmus_hub sync --max-details 5 --max-items-per-listing 15 --delay 1.0
 ```
 
-Xem thông báo đã lưu:
+Nếu bỏ `--max-details`, chương trình sẽ dùng giới hạn được cấu hình theo từng nguồn. Tham số này, khi được truyền, có thể ghi đè giới hạn của tất cả nguồn được chọn.
 
-```bash
+Xem danh sách thông báo và xuất dữ liệu:
+
+```powershell
 python -m hcmus_hub list --limit 30
 python -m hcmus_hub list --unread --limit 30
-```
-
-Xuất dữ liệu:
-
-```bash
 python -m hcmus_hub export --output data/export.json
 ```
 
-CSDL mặc định ở `data/hcmus_hub.sqlite3`. Để xem log dễ hơn, lưu toàn bộ terminal vào file hoặc copy phần JSON của lệnh sync khi có lỗi.
-
-## 6. Các lệnh
+Các lệnh CLI chính:
 
 ```text
 python -m hcmus_hub audit [--source SOURCE_ID] [--output DIR]
@@ -124,73 +152,68 @@ python -m hcmus_hub list [--limit N] [--unread]
 python -m hcmus_hub export [--output FILE]
 ```
 
-Có thể lặp `--source` để chọn nhiều nguồn, ví dụ `--source fit --source svnckh`.
+Có thể lặp `--source` để chọn nhiều nguồn, ví dụ `--source fit --source svnckh`. Các tùy chọn có thể khác theo phiên bản; dùng `python -m hcmus_hub --help` để xem trợ giúp của checkout đang sử dụng.
 
-## 7. Mô hình dữ liệu
+## Đồng bộ snapshot dùng chung (tùy chọn)
 
-- `sources`: nguồn, trạng thái kiểm tra gần nhất, lỗi gần nhất.
-- `articles`: tiêu đề, ngày đăng, chủ đề, trích đoạn, nội dung, tệp đính kèm, dấu vết nội dung, trạng thái đã đọc/yêu thích.
-- `article_sources`: lưu URL nguồn; một bài trùng có thể gắn với nhiều website.
-- `article_revisions`: bản cũ khi phát hiện nội dung thay đổi qua một URL đã biết.
+HCMUS Hub có cơ chế xuất bản, tải và nhập snapshot dùng chung thông qua Cloudflare Worker và R2. Đây là chức năng tùy chọn; việc chạy dashboard cục bộ không đồng nghĩa đã cấu hình dịch vụ cloud.
 
-Bài trùng hiện được phát hiện bằng tiêu đề đã chuẩn hóa + ngày đăng (khi có). Đây là heuristic hữu ích nhưng không hoàn hảo: tiêu đề giống nhau không đảm bảo cùng một bài, và một tiêu đề thay đổi mạnh có thể không tự hợp nhất. Trước khi dùng lâu dài, cần kiểm chứng bằng kết quả thực tế.
+- Worker cần được triển khai và cấu hình đúng binding R2.
+- Token ghi dữ liệu phải được đặt trong biến môi trường/`.env` phù hợp, không được commit lên Git.
+- Dùng `.env.example` làm mẫu cấu hình nếu có; tự điền giá trị riêng trong `.env` của máy mình.
+- Chỉ bật tự động publish khi đã cấu hình endpoint và token chính xác. Thiết lập `HUB_AUTO_PUBLISH=1` để bật tính năng này nếu bản đang dùng hỗ trợ biến đó.
+- Không đưa token, `.env` thật, database cá nhân hoặc snapshot nội bộ vào GitHub Release.
 
-## 8. Bảo mật và giới hạn
+Các lệnh chia sẻ dữ liệu có thể được xem trong trợ giúp CLI của phiên bản hiện tại. Khi thay đổi cấu hình cloud, hãy thử pull trước và sao lưu SQLite trước khi publish để tránh ghi đè nhầm dữ liệu.
 
-- Không nhập mật khẩu HCMUS / UStudy vào file cấu hình.
-- Không lưu cookie hoặc access token vào repository.
-- Prototype chỉ xử lý URL công khai đã khai báo. Không tự động vượt CAPTCHA, MFA, trang đăng nhập hoặc giới hạn truy cập.
-- Mặc định có kiểm tra `robots.txt`, delay giữa các request, retry giới hạn và giới hạn kích thước phản hồi. Nếu robots không đọc được, chương trình ghi cảnh báo; người dùng cần xem chính sách nguồn trước khi chạy lâu dài.
-- Hiện tại chỉ lưu URL tệp đính kèm, không tải hàng loạt file PDF/DOC/XLS hay danh sách sinh viên.
-- Nguồn chưa được kiểm thử thật nên có thể trả về 0 bài hoặc lấy nhầm liên kết. Cần đọc kết quả và tinh chỉnh selectors trước khi tin cậy.
+## Mô hình dữ liệu
 
-## 9. Tiêu chí nghiệm thu bước B
+- `sources`: cấu hình nguồn, trạng thái kiểm tra và lỗi gần nhất.
+- `articles`: tiêu đề, ngày đăng, chủ đề, trích đoạn/nội dung, tệp đính kèm và trạng thái của bài.
+- `article_sources`: ánh xạ một bài tới một hoặc nhiều URL nguồn.
+- `article_revisions`: lưu các phiên bản nội dung cũ khi phát hiện thay đổi.
 
-1. `audit --source fit` trả ra trạng thái HTTP thực tế cho các endpoint.
-2. `sync --source fit` lấy tiêu đề + URL + ngày đăng từ các danh mục đã cấu hình.
-3. Bài chi tiết được lấy nội dung và URL tệp đính kèm khi có.
-4. Chạy sync lần hai không tạo bản ghi lặp cho những URL đã thấy.
-5. Bài cùng tiêu đề/ngày từ nguồn khác được liên kết như một nguồn bổ sung.
-6. Nếu trang không tải được, lỗi được ghi vào báo cáo thay vì bị bỏ qua âm thầm.
+Việc phát hiện trùng sử dụng heuristic dựa trên thông tin bài đã chuẩn hóa, chẳng hạn tiêu đề và ngày đăng khi có. Đây không phải cơ chế hoàn hảo: hai bài khác nhau vẫn có thể bị xem là trùng, hoặc cùng một bài có thể không được hợp nhất nếu tiêu đề thay đổi nhiều.
 
-## 10. Lệnh kiểm thử sau audit ngày 15/10/2026
+## Bảo mật và giới hạn
 
-Audit trên máy của mèo đã xác nhận:
+- Chỉ thu thập các URL công khai đã được cấu hình.
+- Không nhập mật khẩu HCMUS/UStudy vào file cấu hình; không lưu cookie hoặc access token trong repository.
+- Không tự động vượt CAPTCHA, MFA, trang đăng nhập hoặc biện pháp giới hạn truy cập.
+- Tôn trọng chính sách truy cập của từng website. Nếu `robots.txt` không đọc được, cần xem cảnh báo và tự đánh giá chính sách nguồn trước khi chạy lâu dài.
+- Chương trình có thể giới hạn tốc độ request, retry và kích thước phản hồi theo cấu hình hiện tại; không nên tăng tải đột ngột lên nguồn.
+- Tệp đính kèm có thể chỉ được lưu dưới dạng URL, không có nghĩa nội dung file đã được tải về.
+- Một số website có thể thay đổi HTML/feed hoặc chặn request; kết quả đồng bộ cần được kiểm tra thực tế.
+- Không công khai `.env`, token Worker, database chứa trạng thái cá nhân hoặc file log có thông tin nhạy cảm.
 
-- `https://hcmus.edu.vn/rss.xml` là RSS hợp lệ; không dùng `/feed/` ở domain này vì nó trả HTML.
-- `https://tuyensinh.hcmus.edu.vn/feed/` là RSS hợp lệ.
-- SVNCKH có RSS theo danh mục tại `/danh-muc/thong-bao-tin-tuc/feed/` và `/danh-muc/tin-tuc/feed/`.
-- Đoàn trường có `/feed/` và `/news/feed/`.
-- CTSV có `sitemap.xml` trả `urlset`, trong khi trang chủ audit được ghi nhận 0 thẻ liên kết; v0.2 thử lấy các URL `/news/` từ sitemap rồi đọc chi tiết.
+## Gợi ý kiểm tra nguồn
 
-Bắt đầu bằng audit lại sitemap CTSV:
+Các endpoint đã được xác nhận trong đợt audit ngày 15/10/2026 có thể thay đổi theo thời gian. Nếu báo cáo audit vẫn còn trong repository, xem `docs/AUDIT_RESULTS_2026-10-15.md` để biết bối cảnh lịch sử; nên chạy audit lại trước khi chẩn đoán lỗi nguồn.
 
-```bash
+Ví dụ kiểm tra riêng CTSV:
+
+```powershell
 python -m hcmus_hub audit --source ctsv --output data/audit
-```
-
-Sau đó đồng bộ riêng CTSV để kiểm tra parser sitemap:
-
-```bash
 python -m hcmus_hub sync --source ctsv --delay 1.0
 python -m hcmus_hub list --limit 30
 ```
 
-Tiếp theo thử các nguồn có RSS đã xác nhận:
+Ví dụ đồng bộ các nguồn đã cấu hình:
 
-```bash
+```powershell
 python -m hcmus_hub sync --source hcmus --source tuyensinh --source svnckh --source doantn --delay 1.0
 python -m hcmus_hub list --limit 50
 ```
 
-Cuối cùng thử FIT bằng HTML:
+Kiểm tra một nguồn trước với giới hạn thấp là cách tốt để rà soát parser trước khi tăng số lượng bài chi tiết.
 
-```bash
-python -m hcmus_hub sync --source fit --max-details 3 --max-items-per-listing 10 --delay 1.0
-```
+## Phát triển và báo lỗi
 
-Lưu ý: `--max-details` nếu có sẽ ghi đè giới hạn chi tiết cấu hình của tất cả nguồn được chọn. Khi kiểm tra CTSV, nên không truyền `--max-details` để dùng giới hạn riêng của CTSV.
+Khi gặp lỗi:
 
-## 11. Giai đoạn kế tiếp
+1. Ghi lại lệnh đã chạy, thời điểm và thông báo lỗi liên quan.
+2. Kiểm tra báo cáo audit hoặc log website-check.
+3. Chia sẻ log đã loại bỏ token, cookie, thông tin cá nhân và đường dẫn riêng tư nếu cần hỗ trợ.
+4. Sao lưu SQLite trước khi thử thay đổi cấu hình đồng bộ hoặc nhập snapshot.
 
-Sau khi kiểm thử B: chỉnh parser theo HTML thực tế, bổ sung nguồn CTSV/Phòng Đào tạo/Đoàn–Hội, xây giao diện web; riêng UStudy/Portal HCMUS cần khảo sát API qua phiên đăng nhập hợp lệ và cấu hình bảo mật riêng.
+HCMUS Hub hiện là dự án alpha; tính đúng đắn của parser, logic hợp nhất bài trùng và độ ổn định của đồng bộ cần tiếp tục được xác minh bằng dữ liệu thực tế.
