@@ -43,9 +43,30 @@
   .feed-column { height:100%; min-height:0; overflow:hidden; }
   .feed-list { min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; }
   .detail-panel { height:100%; min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; }
-  .detail-content { height:auto; min-height:0; }
+  .detail-content { height:auto; min-height:0; position:relative; }
   .detail-empty { height:100%; min-height:0; }
   .main-footer { flex:0 0 auto; margin-top:10px; }
+}
+
+.detail-close {
+  position:absolute;
+  top:0;
+  right:0;
+  width:28px;
+  height:28px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  color:var(--muted);
+  font-size:22px;
+  line-height:28px;
+  cursor:pointer;
+}
+.detail-close:hover,
+.detail-close:focus-visible {
+  background:var(--surface-soft);
+  color:var(--text);
 }
 
 /* At narrow widths the columns stack, but each pane can still scroll on its own. */
@@ -57,7 +78,7 @@
   .feed-column { height:auto; min-height:unset; overflow:visible; }
   .feed-list { flex:0 1 auto; min-height:0; max-height:45vh; overflow-y:auto; overscroll-behavior:contain; }
   .detail-panel { height:auto; max-height:75vh; min-height:unset; overflow-y:auto; overscroll-behavior:contain; }
-  .detail-content { height:auto; min-height:0; }
+  .detail-content { height:auto; min-height:0; position:relative; }
   .detail-empty { height:auto; min-height:310px; }
 }
 

@@ -32,12 +32,8 @@
     <main class="main-area">
       <header class="topbar">
         <div><div class="eyebrow">CỔNG THÔNG TIN SINH VIÊN</div><h1>Thông báo của bạn</h1><p class="subheading">Các thông báo từ nhiều nguồn, tập trung trong một luồng.</p></div>
-        <div class="topbar-actions"><span class="local-pill"><span class="status-dot"></span> Dữ liệu trên máy này</span><button id="mark-all-read" class="button secondary mark-all-read" title="Đánh dấu tất cả thông báo là đã đọc">✓ Đánh dấu tất cả đã đọc</button><button id="website-check-btn" class="button primary website-check-btn">↻ Kiểm tra website ngay</button><button id="refresh-btn" class="icon-button" title="Tải lại dữ liệu" aria-label="Tải lại dữ liệu">↻</button></div>
+        <div class="topbar-actions"><span class="local-pill"><span class="status-dot"></span> Dữ liệu trên máy này</span><button id="mark-all-read" class="button secondary mark-all-read" title="Đánh dấu tất cả thông báo là đã đọc">✓ Đánh dấu tất cả đã đọc</button><button id="refresh-btn" class="icon-button" title="Kiểm tra website và cập nhật dữ liệu" aria-label="Kiểm tra website và cập nhật dữ liệu">↻</button></div>
       </header>
-      <section id="website-check-panel" class="website-check-panel" hidden aria-live="polite">
-        <div><strong id="website-check-status">Sẵn sàng kiểm tra website</strong><span id="website-check-summary" class="muted"></span></div>
-        <div id="website-check-errors" class="website-check-errors"></div>
-      </section>
 
       <section class="workspace">
         <div class="feed-column">
@@ -50,7 +46,7 @@
           <div id="feed-list" class="feed-list"><div class="loading"><span class="spinner"></span>Đang đọc thông báo…</div></div>
           <div class="pagination"><button id="prev-page" class="button secondary" disabled>← Trước</button><span id="pagination-label">Trang 1</span><button id="next-page" class="button secondary" disabled>Tiếp →</button></div>
         </div>
-        <aside id="detail-panel" class="detail-panel"><div class="detail-empty"><div class="empty-icon">↖</div><h2>Chọn một thông báo</h2><p>Nội dung bài viết sẽ hiển thị ngay tại đây. Bạn chỉ cần mở trang gốc khi cần biểu mẫu hoặc tệp đính kèm.</p></div></aside>
+        <aside id="detail-panel" class="detail-panel"><div class="detail-empty"><div class="empty-icon">↖</div><h2>Chọn một thông báo để xem nội dung.</h2></div></aside>
       </section>
       <footer class="main-footer">HCMUS Hub · Công cụ cá nhân, không phải website chính thức của Trường. Luôn đối chiếu thời hạn và hướng dẫn với nguồn gốc.</footer>
     </main>

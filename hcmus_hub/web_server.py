@@ -82,6 +82,16 @@ def _run_website_check(server) -> None:
             {"source_id": report["source_id"], "source_name": report["source_name"], "errors": report["errors"]}
             for report in reports if report["errors"]
         ]
+        print("[WEBSITE-CHECK] " + json.dumps({
+            "sources_checked": len(reports),
+            "new_articles": sum(report["new_articles"] for report in reports),
+            "updated_content": sum(report["updated_content"] for report in reports),
+            "linked_duplicate": sum(report["linked_duplicate"] for report in reports),
+            "unchanged": sum(report["unchanged"] for report in reports),
+            "listings_not_modified": sum(report["listings_not_modified"] for report in reports),
+            "failed_sources": failed_sources,
+            "auto_publish": auto_publish,
+        }, ensure_ascii=False))
         with server.website_check_lock:  # type: ignore[attr-defined]
             state.update({
                 "status": "completed",
