@@ -33,6 +33,36 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
+## 3.1. Đóng gói bộ cài Windows
+
+Bản đóng gói dùng PyInstaller `onedir` và Inno Setup. Bộ cài **không chứa**
+SQLite, `.env`, token, thư mục `.git`, `build`, `dist` cũ, log hoặc dữ liệu
+riêng tư. Khi chạy bản cài đặt, dữ liệu được lưu ổn định tại:
+
+`%LOCALAPPDATA%\HCMUS Hub\data\hcmus_hub.sqlite3`
+
+Nếu đường dẫn đích chưa có CSDL, launcher chỉ sao chép một lần từ
+`data\hcmus_hub.sqlite3` trong thư mục hiện tại (hỗ trợ chuyển từ bản phát
+triển); không ghi đè hoặc sửa CSDL nguồn. `.env` tùy chọn đặt tại
+`%LOCALAPPDATA%\HCMUS Hub\.env`.
+
+Yêu cầu trên máy build: Python 3.11+, PyInstaller và Inno Setup (có
+`ISCC.exe`). Cài PyInstaller trong môi trường Python của dự án nếu cần:
+
+```powershell
+python -m pip install pyinstaller
+```
+
+Sau khi cài Inno Setup, chạy từ thư mục gốc repository:
+
+```powershell
+.\packaging\build_windows.ps1
+```
+
+Script tạo thư mục tạm `build\windows`, bản chạy `dist\windows` và file cài
+đặt `dist\installer\HCMUS-Hub-Setup.exe`. Chỉ khi lệnh hoàn tất thành công
+mới có thể coi file Setup đã được tạo.
+
 ## 4. Bước đầu tiên — audit thật các nguồn từ máy của bạn
 
 Báo cáo audit của mèo ngày 15/10/2026 đã xác nhận một số endpoint RSS/API/sitemap hoạt động. Xem `docs/AUDIT_RESULTS_2026-10-15.md`. v0.2 mở rộng audit để đếm mục feed, URL trong sitemap và hiển thị một số URL mẫu. Chạy audit lại khi muốn xác nhận sitemap CTSV có bao nhiêu URL bài viết, vì bản audit cũ chỉ ghi `root=urlset`.
