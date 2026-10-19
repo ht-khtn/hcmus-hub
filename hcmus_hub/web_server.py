@@ -4,6 +4,7 @@ import json
 import sqlite3
 import threading
 import time
+import asyncio
 from datetime import date, datetime
 import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -11,6 +12,8 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from .safehtml import rich_html_has_payload, sanitize_rich_html
+from .config import load_config
+from .fetcher import PoliteFetcher
 from .sharing import (
     DEFAULT_SHARE_BASE_URL,
     cloud_snapshot_hash,
@@ -19,9 +22,94 @@ from .sharing import (
     remember_pulled_snapshot_hash,
 )
 from .textutils import decode_html_entities
+from .store import Store
+from .sync import sync_source
 
 ROOT = Path(__file__).resolve().parent.parent
 DASHBOARD_DIR = ROOT / "dashboard"
+DEFAULT_CONFIG = ROOT / "config" / "sources.json"
+
+
+def _new_check_state() -> dict:
+    return {
+        "status": "ready",
+        "started_at": None,
+        "finished_at": None,
+        "report": None,
+        "error": None,
+    }
+
+
+def _run_website_check(server) -> None:
+    state = server.website_check_state  # type: ignore[attr-defined]
+    try:
+        config, sources = load_config(DEFAULT_CONFIG)
+        selected = [source for source in sources if source.enabled]
+        reports = []
+        store = Store(server.db_path)  # type: ignore[attr-defined]
+        try:
+            async def run():
+                async with PoliteFetcher(
+                    user_agent=config.get("user_agent", "HCMUSHub/0.1"),
+                    timeout=float(config.get("request_timeout_seconds", 20)),
+                    delay=float(config.get("delay_between_requests_seconds", 0.8)),
+                    max_bytes=int(config.get("max_response_bytes", 5_000_000)),
+                    respect_robots=True,
+                ) as fetcher:
+                    for source in selected:
+                        reports.append(await sync_source(source, fetcher, store))
+                    return list(fetcher.warnings)
+
+            fetcher_warnings = asyncio.run(run())
+        finally:
+            store.close()
+        failed_sources = [
+            {"source_id": report["source_id"], "source_name": report["source_name"], "errors": report["errors"]}
+            for report in reports if report["errors"]
+        ]
+        with server.website_check_lock:  # type: ignore[attr-defined]
+            state.update({
+                "status": "completed",
+                "finished_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+                "report": {
+                    "sources_checked": len(reports),
+                    "articles_discovered": sum(report["articles_discovered"] for report in reports),
+                    "upsert_events": sum(report["upsert_events"] for report in reports),
+                    "failed_sources": failed_sources,
+                    "fetcher_warnings": fetcher_warnings,
+                },
+                "error": None,
+            })
+    except Exception as exc:
+        with server.website_check_lock:  # type: ignore[attr-defined]
+            state.update({
+                "status": "error",
+                "finished_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+                "report": None,
+                "error": f"{type(exc).__name__}: {exc}",
+            })
+
+
+def _start_website_check(server) -> bool:
+    with server.website_check_lock:  # type: ignore[attr-defined]
+        if server.website_check_state["status"] == "running":  # type: ignore[attr-defined]
+            return False
+        server.website_check_state.update(  # type: ignore[attr-defined]
+            {
+                "status": "running",
+                "started_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+                "finished_at": None,
+                "report": None,
+                "error": None,
+            }
+        )
+    threading.Thread(
+        target=_run_website_check,
+        args=(server,),
+        name="hcmus-hub-website-check",
+        daemon=True,
+    ).start()
+    return True
 
 
 def _connect(db_path: Path):
@@ -292,6 +380,10 @@ class _HubHandler(BaseHTTPRequestHandler):
         try:
             if path == "/api/version":
                 self._json(_api_version(self.db_path)); return
+            if path == "/api/website-check":
+                with self.server.website_check_lock:  # type: ignore[attr-defined]
+                    self._json(dict(self.server.website_check_state))  # type: ignore[attr-defined]
+                return
             if path == "/api/stats":
                 self._json(_api_stats(self.db_path, (params.get("academic_year", [""])[0] or "").strip())); return
             if path == "/api/articles":
@@ -316,6 +408,12 @@ class _HubHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urlparse(self.path)
+        if parsed.path == "/api/website-check":
+            if not _start_website_check(self.server):
+                self._json({"error": "Đang có lượt kiểm tra website chạy"}, 409)
+            else:
+                self._json({"status": "running"}, 202)
+            return
         if parsed.path == "/api/read-all":
             try:
                 length = min(int(self.headers.get("Content-Length", "0")), 10000)
@@ -386,6 +484,8 @@ def serve_dashboard(db_path: str | Path, host: str = "127.0.0.1", port: int = 87
     # Bind to loopback by default to keep student data local. Explicit public bind is not supported by default.
     server = ThreadingHTTPServer((host, port), _HubHandler)
     server.db_path = database  # type: ignore[attr-defined]
+    server.website_check_lock = threading.Lock()  # type: ignore[attr-defined]
+    server.website_check_state = _new_check_state()  # type: ignore[attr-defined]
     threading.Thread(
         target=_share_poll_loop,
         args=(database, DEFAULT_SHARE_BASE_URL),

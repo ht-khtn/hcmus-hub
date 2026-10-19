@@ -5,6 +5,8 @@
   let toastTimer = null;
   let pollTimer = null;
   let pollInFlight = false;
+  let websiteCheckTimer = null;
+  let websiteCheckLastStatus = null;
 
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const short = (value, max=130) => { const s = String(value || '').replace(/\s+/g, ' ').trim(); return s.length > max ? s.slice(0, max - 1) + '…' : s; };
@@ -46,6 +48,42 @@
     $('#connection-status').textContent = text;
     const dot = document.querySelector('.sidebar-footer .status-dot');
     if (dot) dot.style.background = ok ? '#3fa77b' : '#c46a4d';
+  }
+  function renderWebsiteCheck(payload) {
+    const panel = $('#website-check-panel');
+    const button = $('#website-check-btn');
+    const statusText = {
+      ready: 'Sẵn sàng kiểm tra website',
+      running: 'Đang kiểm tra website…',
+      completed: 'Đã kiểm tra website',
+      error: 'Kiểm tra website gặp lỗi',
+    }[payload.status] || 'Trạng thái kiểm tra không xác định';
+    panel.hidden = payload.status === 'ready' && !payload.report && !payload.error;
+    button.disabled = payload.status === 'running';
+    $('#website-check-status').textContent = statusText;
+    const report = payload.report;
+    $('#website-check-summary').textContent = report
+      ? `· ${report.sources_checked} nguồn, ${report.articles_discovered} bài phát hiện, ${report.upsert_events} lượt cập nhật`
+      : payload.error ? `· ${payload.error}` : '';
+    const failed = (report?.failed_sources || []);
+    $('#website-check-errors').innerHTML = failed.length
+      ? `<strong>Nguồn gặp lỗi:</strong> ${failed.map(source => `${esc(source.source_name)} — ${esc(source.errors.join('; '))}`).join('<br>')}`
+      : '';
+  }
+  async function pollWebsiteCheck() {
+    try {
+      const payload = await api('/api/website-check');
+      const previousStatus = websiteCheckLastStatus;
+      websiteCheckLastStatus = payload.status;
+      renderWebsiteCheck(payload);
+      if (payload.status === 'running') {
+        if (websiteCheckTimer === null) websiteCheckTimer = window.setTimeout(() => { websiteCheckTimer = null; pollWebsiteCheck(); }, 1000);
+      } else if (payload.status === 'completed' && previousStatus === 'running') {
+        await refreshFromPolling();
+      }
+    } catch (err) {
+      renderWebsiteCheck({status: 'error', error: err.message});
+    }
   }
   async function loadStats() {
     const statsParams = new URLSearchParams();
@@ -275,6 +313,13 @@
     $('#prev-page').addEventListener('click',()=>{if(state.page>1){state.page--;loadList();}});
     $('#next-page').addEventListener('click',()=>{if(state.page<state.pages){state.page++;loadList();}});
     $('#refresh-btn').addEventListener('click',async()=>{try{await loadStats();await loadList();toast('Đã tải lại dữ liệu từ CSDL');}catch(e){toast('Không tải lại được: '+e.message);}});
+    $('#website-check-btn').addEventListener('click', async () => {
+      try {
+        await api('/api/website-check', {method:'POST'});
+        renderWebsiteCheck({status:'running'});
+        pollWebsiteCheck();
+      } catch (err) { toast('Không thể bắt đầu kiểm tra website: ' + err.message); }
+    });
     $('#mark-all-read').addEventListener('click', async()=>{
       const unread = Number(state.stats?.unread || 0);
       if (!unread) { toast('Không còn thông báo chưa đọc'); return; }
@@ -289,6 +334,6 @@
       } catch (err) { toast('Không thể đánh dấu tất cả đã đọc: ' + err.message); }
     });
   }
-  async function init(){bindEvents();try{await loadStats();await loadList();await pollVersion();startPolling();}catch(err){setStatus('Không kết nối được CSDL',false);$('#feed-list').innerHTML=`<div class="empty-state">${esc(err.message)}</div>`;}}
+  async function init(){bindEvents();try{await loadStats();await loadList();await pollVersion();await pollWebsiteCheck();startPolling();}catch(err){setStatus('Không kết nối được CSDL',false);$('#feed-list').innerHTML=`<div class="empty-state">${esc(err.message)}</div>`;}}
   init();
 })();
