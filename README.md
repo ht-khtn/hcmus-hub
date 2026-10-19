@@ -4,6 +4,14 @@ HCMUS Hub là dự án cá nhân nhằm tổng hợp và theo dõi thông báo c
 
 > **Trạng thái:** alpha. Các chức năng và cấu trúc dữ liệu vẫn có thể thay đổi; hãy sao lưu dữ liệu trước khi nâng cấp hoặc chuyển sang bản đóng gói.
 
+## Tải xuống (bản alpha)
+
+**Windows — HCMUS Hub v0.9.0-alpha:** [Tải HCMUS-Hub-Setup.exe](https://github.com/ht-khtn/hcmus-hub/releases/download/v0.9.0-alpha/HCMUS-Hub-Setup.exe)
+
+> Đây là bản alpha dùng thử; một số chức năng có thể chưa ổn định. Hãy sao lưu dữ liệu trước khi cài đặt hoặc nâng cấp.
+
+Xem thêm [ghi chú phát hành v0.9.0-alpha](https://github.com/ht-khtn/hcmus-hub/releases/tag/v0.9.0-alpha).
+
 ## Tính năng
 
 - Thu thập thông báo từ các nguồn công khai đã cấu hình, sử dụng RSS/Atom, sitemap hoặc HTML tùy từng nguồn.
