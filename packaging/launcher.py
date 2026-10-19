@@ -12,7 +12,7 @@ import urllib.request
 import webbrowser
 from pathlib import Path
 
-from hcmus_hub.web_server import serve_dashboard
+from hcmus_hub.web_server import initialize_database, serve_dashboard
 
 
 HOST = "127.0.0.1"
@@ -58,12 +58,9 @@ def _prepare_database() -> Path:
             continue
         shutil.copy2(source, target)
         break
-    if not target.exists():
-        raise FileNotFoundError(
-            f"Không tìm thấy CSDL. Đặt {DATABASE_NAME} vào {data_dir} "
-            "hoặc chạy bản phát triển để tạo CSDL trước."
-        )
-    return target
+    # Store creates the parent directory, schema, and additive migrations.  If
+    # no legacy database was found this is the first-run database creation.
+    return initialize_database(target)
 
 
 def _is_server_ready() -> bool:

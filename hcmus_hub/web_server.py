@@ -32,6 +32,19 @@ DASHBOARD_DIR = ROOT / "dashboard"
 DEFAULT_CONFIG = ROOT / "config" / "sources.json"
 
 
+def initialize_database(db_path: str | Path) -> Path:
+    """Create/migrate the database and register the configured sources."""
+    database = Path(db_path).expanduser().resolve()
+    _, sources = load_config(DEFAULT_CONFIG)
+    store = Store(database)
+    try:
+        for source in sources:
+            store.register_source(source)
+    finally:
+        store.close()
+    return database
+
+
 def _new_check_state() -> dict:
     return {
         "status": "ready",
@@ -509,9 +522,7 @@ def serve_dashboard(db_path: str | Path, host: str = "127.0.0.1", port: int = 87
     if not database.exists():
         raise FileNotFoundError(f"Không tìm thấy CSDL: {database}. Hãy chạy sync hoặc run-all trước.")
     # Apply additive SQLite schema migrations before serving API queries.
-    from .store import Store
-    migrated_store = Store(database)
-    migrated_store.close()
+    initialize_database(database)
     # Bind to loopback by default to keep student data local. Explicit public bind is not supported by default.
     server = ThreadingHTTPServer((host, port), _HubHandler)
     server.db_path = database  # type: ignore[attr-defined]
