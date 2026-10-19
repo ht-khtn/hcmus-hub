@@ -1,5 +1,5 @@
 #define MyAppName "HCMUS Hub"
-#define MyAppVersion "0.8.0"
+#define MyAppVersion "0.9.1"
 #define MyAppPublisher "HCMUS Hub"
 #define MyAppExeName "HCMUS-Hub.exe"
 
