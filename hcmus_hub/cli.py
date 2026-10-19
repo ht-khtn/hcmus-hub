@@ -21,6 +21,7 @@ from .enrich import enrich_weak_articles
 from .quality import build_quality_report, write_quality_report
 from .web_server import serve_dashboard
 from .sharing import (
+    auto_publish_if_changed,
     DEFAULT_SHARE_BASE_URL,
     export_snapshot,
     import_snapshot,
@@ -108,6 +109,10 @@ async def _run_sync(args):
         print("Không có nguồn phù hợp. Kiểm tra config/sources.json và tuỳ chọn --source.")
         return
     db_path = Path(args.db).expanduser().resolve()
+    before_fingerprint = None
+    if os.environ.get("HUB_AUTO_PUBLISH") == "1":
+        from .sharing import shared_fingerprint_for_db
+        before_fingerprint = shared_fingerprint_for_db(db_path)
     store = Store(db_path)
     try:
         async with _create_fetcher(config, force_delay=args.delay) as fetcher:
@@ -126,6 +131,15 @@ async def _run_sync(args):
         print(f"Tổng: {json.dumps(store.counts(), ensure_ascii=False)}")
     finally:
         store.close()
+    auto_publish = (
+        auto_publish_if_changed(
+            db_path, before_fingerprint, base_url=DEFAULT_SHARE_BASE_URL,
+            token=os.environ.get("HUB_WRITE_TOKEN"),
+        )
+        if before_fingerprint is not None else
+        {"status": "disabled", "message": "HUB_AUTO_PUBLISH chưa bật."}
+    )
+    print(f"Auto-publish: {json.dumps(auto_publish, ensure_ascii=False)}")
 
 
 def _looks_like_slug_placeholder(title: str, urls: str) -> bool:

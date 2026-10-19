@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import threading
 import time
@@ -16,6 +17,7 @@ from .config import load_config
 from .fetcher import PoliteFetcher
 from .sharing import (
     DEFAULT_SHARE_BASE_URL,
+    auto_publish_if_changed,
     cloud_snapshot_hash,
     last_pulled_snapshot_hash,
     pull_snapshot,
@@ -43,6 +45,10 @@ def _new_check_state() -> dict:
 def _run_website_check(server) -> None:
     state = server.website_check_state  # type: ignore[attr-defined]
     try:
+        before_fingerprint = None
+        if os.environ.get("HUB_AUTO_PUBLISH") == "1":
+            from .sharing import shared_fingerprint_for_db
+            before_fingerprint = shared_fingerprint_for_db(server.db_path)  # type: ignore[attr-defined]
         config, sources = load_config(DEFAULT_CONFIG)
         selected = [source for source in sources if source.enabled]
         reports = []
@@ -63,6 +69,15 @@ def _run_website_check(server) -> None:
             fetcher_warnings = asyncio.run(run())
         finally:
             store.close()
+        auto_publish = (
+            auto_publish_if_changed(
+                server.db_path, before_fingerprint,  # type: ignore[arg-type]
+                base_url=DEFAULT_SHARE_BASE_URL,
+                token=os.environ.get("HUB_WRITE_TOKEN"),
+            )
+            if before_fingerprint is not None else
+            {"status": "disabled", "message": "HUB_AUTO_PUBLISH chưa bật."}
+        )
         failed_sources = [
             {"source_id": report["source_id"], "source_name": report["source_name"], "errors": report["errors"]}
             for report in reports if report["errors"]
@@ -82,6 +97,7 @@ def _run_website_check(server) -> None:
                     "listings_not_modified": sum(report["listings_not_modified"] for report in reports),
                     "failed_sources": failed_sources,
                     "fetcher_warnings": fetcher_warnings,
+                    "auto_publish": auto_publish,
                 },
                 "error": None,
             })

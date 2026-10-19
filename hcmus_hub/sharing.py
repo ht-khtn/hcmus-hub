@@ -59,6 +59,40 @@ def _shared_fingerprint(payload: dict[str, Any]) -> str:
     return hashlib.sha256(_json_bytes(shared)).hexdigest()
 
 
+def shared_fingerprint_for_db(db_path: str | Path) -> str:
+    with tempfile.TemporaryDirectory(prefix="hcmus-hub-share-fingerprint-") as temp_dir:
+        directory = Path(temp_dir)
+        export_snapshot(db_path, directory / "snapshot.json.gz", directory / "manifest.json")
+        payload, _ = _read_snapshot(directory / "snapshot.json.gz", directory / "manifest.json")
+        return _shared_fingerprint(payload)
+
+
+def auto_publish_if_changed(
+    db_path: str | Path,
+    before_fingerprint: str,
+    *,
+    base_url: str = DEFAULT_SHARE_BASE_URL,
+    token: str | None = None,
+) -> dict[str, Any]:
+    if os.environ.get("HUB_AUTO_PUBLISH") != "1":
+        return {"status": "disabled", "message": "HUB_AUTO_PUBLISH chưa bật."}
+    after_fingerprint = shared_fingerprint_for_db(db_path)
+    if after_fingerprint == before_fingerprint:
+        return {"status": "unchanged", "message": "Dữ liệu dùng chung không thay đổi."}
+    if not token:
+        return {"status": "missing_token", "message": "Thiếu HUB_WRITE_TOKEN; chưa publish."}
+    try:
+        report = publish_snapshot(db_path, base_url, token)
+    except (ValueError, OSError, sqlite3.Error) as exc:
+        return {"status": "error", "message": f"{type(exc).__name__}: {exc}"}
+    return {
+        "status": "published" if report.get("published", True) else "unchanged",
+        "message": "Đã publish dữ liệu dùng chung." if report.get("published", True)
+        else "Dữ liệu đã đồng bộ; không cần publish thêm.",
+        "report": report,
+    }
+
+
 def _read_snapshot(snapshot_path: str | Path, manifest_path: str | Path) -> tuple[dict[str, Any], dict[str, Any]]:
     snapshot = Path(snapshot_path).expanduser().resolve()
     manifest_file = Path(manifest_path).expanduser().resolve()

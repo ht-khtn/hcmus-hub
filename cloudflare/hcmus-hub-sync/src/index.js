@@ -149,17 +149,8 @@ async function publish(request, env) {
     ...manifest,
     snapshot: { ...manifest.snapshot, filename: `${digest}.json.gz` },
   };
-  const current = await env.HUB_BUCKET.get(MANIFEST_KEY);
-  const ifMatch = request.headers.get("If-Match");
-  const ifNoneMatch = request.headers.get("If-None-Match");
-  if (current && (!ifMatch || ifMatch !== current.httpEtag)) {
-    return errorResponse(request, 409, "Manifest đã thay đổi; cần pull và merge lại.");
-  }
-  if (!current && ifNoneMatch !== "*") {
-    return errorResponse(request, 409, "Manifest nền không còn tồn tại; cần pull lại.");
-  }
   const written = await env.HUB_BUCKET.put(MANIFEST_KEY, JSON.stringify(storedManifest), {
-    onlyIf: current ? { etagMatches: [current.httpEtag] } : { etagDoesNotMatch: ["*"] },
+    onlyIf: request.headers,
     httpMetadata: { contentType: "application/json; charset=utf-8" },
   });
   if (!written) return errorResponse(request, 409, "Manifest đã thay đổi; cần pull và merge lại.");

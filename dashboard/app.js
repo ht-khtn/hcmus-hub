@@ -62,8 +62,12 @@
     button.disabled = payload.status === 'running';
     $('#website-check-status').textContent = statusText;
     const report = payload.report;
+    const publish = report?.auto_publish;
+    const publishText = publish
+      ? ` · publish: ${publish.message}`
+      : '';
     $('#website-check-summary').textContent = report
-      ? `· ${report.sources_checked} nguồn · mới: ${report.new_articles} · cập nhật nội dung: ${report.updated_content} · liên kết trùng: ${report.linked_duplicate} · không đổi: ${report.unchanged} · listing 304: ${report.listings_not_modified}`
+      ? `· ${report.sources_checked} nguồn · mới: ${report.new_articles} · cập nhật nội dung: ${report.updated_content} · liên kết trùng: ${report.linked_duplicate} · không đổi: ${report.unchanged} · listing 304: ${report.listings_not_modified}${publishText}`
       : payload.error ? `· ${payload.error}` : '';
     const failed = (report?.failed_sources || []);
     $('#website-check-errors').innerHTML = failed.length
