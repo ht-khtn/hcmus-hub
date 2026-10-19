@@ -25,6 +25,10 @@ class _SnapshotManifestMismatch(ValueError):
     pass
 
 
+class _NoCloudManifest(ValueError):
+    pass
+
+
 def _atomic_bytes(path: Path, data: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temp_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
@@ -327,6 +331,40 @@ def _request_with_headers(url: str) -> tuple[bytes, dict[str, str]]:
         raise ValueError(f"Không thể kết nối Worker: {exc.reason}") from exc
 
 
+def _fetch_cloud_snapshot(base_url: str, directory: Path, max_attempts: int) -> tuple[dict[str, Any], dict[str, Any], str | None]:
+    last_mismatch: _SnapshotManifestMismatch | None = None
+    for _ in range(max_attempts):
+        try:
+            manifest_bytes, response_headers = _request_with_headers(_share_url(base_url, "/api/manifest"))
+        except ValueError as exc:
+            if "HTTP 404" in str(exc):
+                raise _NoCloudManifest("Cloud chưa có manifest.") from exc
+            raise
+        try:
+            manifest = json.loads(manifest_bytes.decode("utf-8"))
+            filename = manifest["snapshot"]["filename"]
+            if not isinstance(filename, str) or not filename or Path(filename).name != filename:
+                raise ValueError("Manifest snapshot filename không hợp lệ.")
+        except (UnicodeDecodeError, json.JSONDecodeError, KeyError, TypeError) as exc:
+            raise ValueError("Manifest từ Worker không hợp lệ.") from exc
+        manifest_path = directory / "cloud-manifest.json"
+        snapshot_path = directory / filename
+        manifest_path.write_bytes(manifest_bytes)
+        try:
+            snapshot_path.write_bytes(_request_bytes(_share_url(base_url, "/api/snapshot")))
+        except ValueError as exc:
+            if "HTTP 404" not in str(exc):
+                raise
+            last_mismatch = _SnapshotManifestMismatch("Snapshot tạm thời không tồn tại theo manifest vừa đọc.")
+            continue
+        try:
+            payload, validated_manifest = _read_snapshot(snapshot_path, manifest_path)
+            return payload, validated_manifest, response_headers.get("etag")
+        except _SnapshotManifestMismatch as exc:
+            last_mismatch = exc
+    raise ValueError(f"Manifest và snapshot thay đổi đồng thời sau {max_attempts} lần thử.") from last_mismatch
+
+
 def _multipart_form(snapshot: bytes, snapshot_name: str, manifest: bytes, manifest_name: str) -> tuple[bytes, str]:
     boundary = "----HcmusHubShareBoundary"
     parts = [
@@ -343,28 +381,13 @@ def pull_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL, *
                   max_attempts: int = 3) -> dict[str, Any]:
     with tempfile.TemporaryDirectory(prefix="hcmus-hub-share-pull-") as temp_dir:
         directory = Path(temp_dir)
-        manifest_path = directory / "manifest.json"
-        snapshot_path = directory / "snapshot.json.gz"
-        last_mismatch: _SnapshotManifestMismatch | None = None
-        for _ in range(max_attempts):
-            manifest_bytes = _request_bytes(_share_url(base_url, "/api/manifest"))
-            try:
-                manifest = json.loads(manifest_bytes.decode("utf-8"))
-                filename = manifest["snapshot"]["filename"]
-                if (not isinstance(filename, str) or not filename or
-                        Path(filename).name != filename):
-                    raise ValueError("Manifest snapshot filename không hợp lệ.")
-            except (UnicodeDecodeError, json.JSONDecodeError, KeyError, TypeError) as exc:
-                raise ValueError("Manifest từ Worker không hợp lệ.") from exc
-            manifest_path.write_bytes(manifest_bytes)
-            snapshot_path = directory / filename
-            snapshot_path.write_bytes(_request_bytes(_share_url(base_url, "/api/snapshot")))
-            try:
-                report = import_snapshot(db_path, snapshot_path, manifest_path, apply=apply)
-                return {**report, "snapshot_sha256": manifest["snapshot"]["sha256"].lower()}
-            except _SnapshotManifestMismatch as exc:
-                last_mismatch = exc
-        raise ValueError(f"Manifest và snapshot thay đổi đồng thời sau {max_attempts} lần thử.") from last_mismatch
+        payload, manifest, _ = _fetch_cloud_snapshot(base_url, directory, max_attempts)
+        del payload
+        report = import_snapshot(
+            db_path, directory / manifest["snapshot"]["filename"],
+            directory / "cloud-manifest.json", apply=apply,
+        )
+        return {**report, "snapshot_sha256": manifest["snapshot"]["sha256"].lower()}
 
 
 def publish_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL,
@@ -377,22 +400,12 @@ def publish_snapshot(db_path: str | Path, base_url: str = DEFAULT_SHARE_BASE_URL
         manifest_path = directory / "manifest.json"
         for attempt in range(max_attempts):
             try:
-                manifest_bytes, response_headers = _request_with_headers(_share_url(base_url, "/api/manifest"))
-                manifest = json.loads(manifest_bytes.decode("utf-8"))
-                filename = manifest["snapshot"]["filename"]
-                if not isinstance(filename, str) or Path(filename).name != filename:
-                    raise ValueError("Manifest snapshot filename không hợp lệ.")
-                cloud_snapshot = directory / filename
-                cloud_snapshot.write_bytes(_request_bytes(_share_url(base_url, "/api/snapshot")))
+                cloud_payload, manifest, baseline_etag = _fetch_cloud_snapshot(base_url, directory, max_attempts)
                 cloud_manifest = directory / "cloud-manifest.json"
-                cloud_manifest.write_bytes(manifest_bytes)
-                cloud_payload, _ = _read_snapshot(cloud_snapshot, cloud_manifest)
+                cloud_snapshot = directory / manifest["snapshot"]["filename"]
                 import_snapshot(db_path, cloud_snapshot, cloud_manifest, apply=True)
-                baseline_etag = response_headers.get("etag")
                 cloud_fingerprint = _shared_fingerprint(cloud_payload)
-            except ValueError as exc:
-                if "HTTP 404" not in str(exc):
-                    raise
+            except _NoCloudManifest:
                 baseline_etag = None
                 cloud_fingerprint = None
             export_snapshot(db_path, snapshot_path, manifest_path)
