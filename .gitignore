@@ -6,3 +6,7 @@ data/*.sqlite3
 data/*.json
 data/audit/
 .env
+
+# PyInstaller build artifacts
+/build/
+/dist/
